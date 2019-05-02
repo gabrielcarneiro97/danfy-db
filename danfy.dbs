@@ -1,0 +1,1011 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="danfy" id="Project_1efd899" template="Default" database="PostgreSQL" >
+	<schema name="danfy" schemaname="danfy" >
+		<table name="tb_acumulado" >
+			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="pis" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="cofins" type="numeric" length="9" decimal="2" jt="2" />
+			<index name="pk_tb_acumulado_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<table name="tb_aliquota" >
+			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="cofins" type="numeric" length="9" decimal="4" jt="2" />
+			<column name="pis" type="numeric" length="9" decimal="4" jt="2" />
+			<column name="csll" type="numeric" length="9" decimal="4" jt="2" />
+			<column name="irpj" type="numeric" length="9" decimal="4" jt="2" />
+			<column name="iss" type="numeric" length="9" decimal="4" jt="2" />
+			<column name="icms_aliquota" type="numeric" length="9" decimal="4" jt="2" />
+			<column name="icms_reducao" type="numeric" length="9" decimal="4" jt="2" />
+			<column name="forma_pagamento" type="text" jt="12" />
+			<column name="tributacao" type="text" jt="12" />
+			<column name="ativo" type="bool" jt="-7" mandatory="y" />
+			<column name="validade" type="date" jt="91" />
+			<column name="dono_cpfcnpj" type="varchar" length="14" jt="12" />
+			<index name="pk_aliquota_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="dono_cpfcnpj" to_schema="danfy" to_table="tb_pessoa" >
+				<fk_column name="dono_cpfcnpj" pk="cpfcnpj" />
+			</fk>
+		</table>
+		<table name="tb_endereco" >
+			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="logradouro" type="text" jt="12" mandatory="y" />
+			<column name="numero" type="text" jt="12" mandatory="y" />
+			<column name="cep" type="text" jt="12" />
+			<column name="complemento" type="text" jt="12" />
+			<column name="municipio_id" type="integer" jt="4" />
+			<column name="estado_id" type="integer" jt="4" />
+			<column name="pais_id" type="integer" jt="4" />
+			<index name="pk_tb_endereco_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="municipio_id" to_schema="danfy" to_table="tb_municipio" >
+				<fk_column name="municipio_id" pk="id" />
+			</fk>
+			<fk name="pais_id" to_schema="danfy" to_table="tb_pais" >
+				<fk_column name="pais_id" pk="id" />
+			</fk>
+			<fk name="estado_id" to_schema="danfy" to_table="tb_estado" >
+				<fk_column name="estado_id" pk="id" />
+			</fk>
+		</table>
+		<table name="tb_estado" >
+			<column name="id" type="integer" jt="4" mandatory="y" />
+			<column name="nome" type="text" jt="12" />
+			<column name="sigla" type="char" length="2" jt="1" mandatory="y" />
+			<index name="pk_tb_estado_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<table name="tb_icms" >
+			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="bade_calculo" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="composicao_base" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="difal_destino" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="difal_origem" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="proprio" type="numeric" length="9" decimal="2" jt="2" />
+			<index name="pk_tb_icms_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<table name="tb_imposto" >
+			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="cofins" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="csll" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="irpj" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="pis" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="total" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="icms_id" type="integer" jt="4" />
+			<column name="iss" type="numeric" length="9" decimal="2" jt="2" />
+			<index name="pk_tb_imposto_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="icms_id" to_schema="danfy" to_table="tb_icms" delete_action="cascade" update_action="cascade" >
+				<fk_column name="icms_id" pk="id" />
+			</fk>
+		</table>
+		<table name="tb_movimento" >
+			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="dono_cpfcnpj" type="varchar" length="14" jt="12" mandatory="y" />
+			<column name="nota_final_chave" type="text" jt="12" mandatory="y" />
+			<column name="nota_inicial_chave" type="text" jt="12" />
+			<column name="valor_saida" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="lucro" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="data_hora" type="date" jt="91" mandatory="y" />
+			<column name="conferido" type="bool" jt="-7" />
+			<column name="imposto_id" type="integer" jt="4" />
+			<index name="pk_tb_movimento_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="dono_cpfcnpj" to_schema="danfy" to_table="tb_pessoa" >
+				<fk_column name="dono_cpfcnpj" pk="cpfcnpj" />
+			</fk>
+			<fk name="imposto_id" to_schema="danfy" to_table="tb_imposto" delete_action="cascade" update_action="cascade" >
+				<fk_column name="imposto_id" pk="id" />
+			</fk>
+			<fk name="nota_final_chave" to_schema="danfy" to_table="tb_nota" >
+				<fk_column name="nota_final_chave" pk="chave" />
+			</fk>
+			<fk name="nota_inicial_chave" to_schema="danfy" to_table="tb_nota" >
+				<fk_column name="nota_inicial_chave" pk="chave" />
+			</fk>
+		</table>
+		<table name="tb_municipio" >
+			<column name="id" type="integer" jt="4" mandatory="y" />
+			<column name="nome" type="text" jt="12" mandatory="y" />
+			<index name="pk_tb_municipio_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<table name="tb_nota" >
+			<column name="chave" type="text" jt="12" mandatory="y" />
+			<column name="emitente_cpfcnpj" type="varchar" length="14" jt="12" mandatory="y" />
+			<column name="destinatario_cpfcnpj" type="varchar" length="14" jt="12" mandatory="y" />
+			<column name="texto_complementar" type="text" length="250" jt="12" />
+			<column name="cfop" type="text" jt="12" />
+			<column name="data_hora" type="date" jt="91" />
+			<column name="numero" type="text" jt="12" />
+			<column name="status" type="text" length="1" jt="12" />
+			<column name="tipo" type="char" length="1" jt="1" />
+			<column name="destinatario_contribuite" type="char" length="1" jt="1" />
+			<column name="estado_destino_id" type="integer" jt="4" />
+			<column name="estado_gerador_id" type="integer" jt="4" />
+			<column name="valor" type="numeric" length="9" decimal="2" jt="2" />
+			<index name="pk_tb_nota_chave" unique="PRIMARY_KEY" >
+				<column name="chave" />
+			</index>
+			<fk name="emitente_cpfcnpj" to_schema="danfy" to_table="tb_pessoa" >
+				<fk_column name="emitente_cpfcnpj" pk="cpfcnpj" />
+			</fk>
+			<fk name="destinatario_cpfcnpj" to_schema="danfy" to_table="tb_pessoa" >
+				<fk_column name="destinatario_cpfcnpj" pk="cpfcnpj" />
+			</fk>
+			<fk name="estado_destino_id" to_schema="danfy" to_table="tb_estado" >
+				<fk_column name="estado_destino_id" pk="id" />
+			</fk>
+			<fk name="estado_gerador_id" to_schema="danfy" to_table="tb_estado" >
+				<fk_column name="estado_gerador_id" pk="id" />
+			</fk>
+		</table>
+		<table name="tb_nota_servico" >
+			<column name="chave" type="text" jt="12" mandatory="y" />
+			<column name="emitente_cpfcnpj" type="varchar" length="14" jt="12" mandatory="y" />
+			<column name="destinatario_cpfcnpj" type="varchar" length="14" jt="12" mandatory="y" />
+			<column name="numero" type="text" jt="12" mandatory="y" />
+			<column name="status" type="text" jt="12" mandatory="y" />
+			<column name="data_hora" type="date" jt="91" mandatory="y" />
+			<column name="retencao_id" type="integer" jt="4" />
+			<column name="valor" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="iss" type="numeric" length="9" decimal="2" jt="2" />
+			<index name="pk_tb_nota_servico_chave" unique="PRIMARY_KEY" >
+				<column name="chave" />
+			</index>
+			<fk name="destinatario_cpfcnpj" to_schema="danfy" to_table="tb_pessoa" >
+				<fk_column name="destinatario_cpfcnpj" pk="cpfcnpj" />
+			</fk>
+			<fk name="retencoes_id" to_schema="danfy" to_table="tb_retencao" delete_action="cascade" update_action="cascade" >
+				<fk_column name="retencao_id" pk="id" />
+			</fk>
+			<fk name="emitente_cpfcnpj" to_schema="danfy" to_table="tb_pessoa" >
+				<fk_column name="emitente_cpfcnpj" pk="cpfcnpj" />
+			</fk>
+		</table>
+		<table name="tb_pais" >
+			<column name="id" type="integer" jt="4" mandatory="y" />
+			<column name="nome" type="text" jt="12" mandatory="y" />
+			<index name="pk_tb_municipio_id_0" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<table name="tb_pessoa" >
+			<column name="cpfcnpj" type="varchar" length="14" jt="12" mandatory="y" />
+			<column name="nome" type="text" jt="12" mandatory="y" />
+			<column name="endereco_id" type="integer" jt="4" />
+			<index name="pk_tb_pessoa_cpfcnpj" unique="PRIMARY_KEY" >
+				<column name="cpfcnpj" />
+			</index>
+			<fk name="endereco" to_schema="danfy" to_table="tb_endereco" delete_action="cascade" update_action="cascade" >
+				<fk_column name="endereco_id" pk="id" />
+			</fk>
+		</table>
+		<table name="tb_produto" >
+			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="nome" type="text" jt="12" mandatory="y" />
+			<column name="descricao" type="text" jt="12" mandatory="y" />
+			<column name="quantidade" type="integer" jt="4" />
+			<column name="valor" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="nota_chave" type="text" jt="12" />
+			<index name="pk_tb_produto_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="nota_chave" to_schema="danfy" to_table="tb_nota" >
+				<fk_column name="nota_chave" pk="chave" />
+			</fk>
+		</table>
+		<table name="tb_retencao" >
+			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="iss" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="irpj" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="pis" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="cofins" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="csll" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="inss" type="numeric" length="9" decimal="2" jt="2" />
+			<index name="pk_retencoes_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<table name="tb_servico" >
+			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="dono_cpfcnpj" type="varchar" length="14" jt="12" mandatory="y" />
+			<column name="nota_chave" type="text" jt="12" />
+			<column name="retencao_id" type="integer" jt="4" />
+			<column name="imposto_id" type="integer" jt="4" />
+			<column name="data_hora" type="date" jt="91" />
+			<column name="valor" type="numeric" length="9" decimal="2" jt="2" />
+			<index name="pk_tb_servico_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="dono_cpfcnpj" to_schema="danfy" to_table="tb_pessoa" >
+				<fk_column name="dono_cpfcnpj" pk="cpfcnpj" />
+			</fk>
+			<fk name="retencao_id" to_schema="danfy" to_table="tb_retencao" >
+				<fk_column name="retencao_id" pk="id" />
+			</fk>
+			<fk name="imposto_id" to_schema="danfy" to_table="tb_imposto" delete_action="cascade" update_action="cascade" >
+				<fk_column name="imposto_id" pk="id" />
+			</fk>
+			<fk name="nota_chave" to_schema="danfy" to_table="tb_nota_servico" >
+				<fk_column name="nota_chave" pk="chave" />
+			</fk>
+		</table>
+		<table name="tb_total" >
+			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="dono_cpfcnpj" type="varchar" length="14" jt="12" />
+			<column name="data_hora" type="date" jt="91" />
+			<column name="total_movimento_id" type="integer" jt="4" />
+			<column name="total_servico_id" type="integer" jt="4" />
+			<column name="total_soma_id" type="integer" jt="4" />
+			<column name="anual" type="bool" jt="-7" />
+			<index name="pk_tb_total_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="dono_cpfcnpj" to_schema="danfy" to_table="tb_pessoa" >
+				<fk_column name="dono_cpfcnpj" pk="cpfcnpj" />
+			</fk>
+			<fk name="total_movimento_id" to_schema="danfy" to_table="tb_total_movimento" delete_action="cascade" update_action="cascade" >
+				<fk_column name="total_movimento_id" pk="id" />
+			</fk>
+			<fk name="total_servico_id" to_schema="danfy" to_table="tb_total_servico" delete_action="cascade" update_action="cascade" >
+				<fk_column name="total_servico_id" pk="id" />
+			</fk>
+			<fk name="total_soma_id" to_schema="danfy" to_table="tb_total_soma" delete_action="cascade" update_action="cascade" >
+				<fk_column name="total_soma_id" pk="id" />
+			</fk>
+		</table>
+		<table name="tb_total_movimento" >
+			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="imposto_id" type="integer" jt="4" />
+			<column name="valor_saida" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="lucro" type="numeric" length="9" decimal="2" jt="2" />
+			<index name="pk_tb_total_movimento_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="imposto_id" to_schema="danfy" to_table="tb_imposto" delete_action="cascade" update_action="cascade" >
+				<fk_column name="imposto_id" pk="id" />
+			</fk>
+		</table>
+		<table name="tb_total_servico" >
+			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="total" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="imposto_id" type="integer" jt="4" />
+			<column name="retencao_id" type="integer" jt="4" />
+			<index name="pk_tb_total_servico_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="imposto_id" to_schema="danfy" to_table="tb_imposto" delete_action="cascade" update_action="cascade" >
+				<fk_column name="imposto_id" pk="id" />
+			</fk>
+			<fk name="retencao_id" to_schema="danfy" to_table="tb_retencao" delete_action="cascade" update_action="cascade" >
+				<fk_column name="retencao_id" pk="id" />
+			</fk>
+		</table>
+		<table name="tb_total_soma" >
+			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="valor_movimento" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="valor_servico" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="imposto_id" type="integer" jt="4" />
+			<column name="retencao_id" type="integer" jt="4" />
+			<column name="acumulado_id" type="integer" jt="4" />
+			<index name="pk_tb_total_soma_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="imposto_id" to_schema="danfy" to_table="tb_imposto" delete_action="cascade" update_action="cascade" >
+				<fk_column name="imposto_id" pk="id" />
+			</fk>
+			<fk name="retencao_id" to_schema="danfy" to_table="tb_retencao" delete_action="cascade" update_action="cascade" >
+				<fk_column name="retencao_id" pk="id" />
+			</fk>
+			<fk name="acumulado_id" to_schema="danfy" to_table="tb_acumulado" delete_action="cascade" update_action="cascade" >
+				<fk_column name="acumulado_id" pk="id" />
+			</fk>
+		</table>
+		<sequence name="tb_acumulado_id_seq" start="1" />
+		<sequence name="tb_aliquota_id_seq" start="1" />
+		<sequence name="tb_endereco_id_seq" start="1" />
+		<sequence name="tb_icms_id_seq" start="1" />
+		<sequence name="tb_imposto_id_seq" start="1" />
+		<sequence name="tb_movimento_id_seq" start="1" />
+		<sequence name="tb_produto_id_seq" start="1" />
+		<sequence name="tb_retencao_id_seq" start="1" />
+		<sequence name="tb_servico_id_seq" start="1" />
+		<sequence name="tb_total_id_seq" start="1" />
+		<sequence name="tb_total_movimento_id_seq" start="1" />
+		<sequence name="tb_total_servico_id_seq" start="1" />
+		<sequence name="tb_total_soma_id_seq" start="1" />
+	</schema>
+	<schema name="information_schema" catalogname="danfy" schemaname="information_schema" >
+		<udt name="cardinal_number" udt_java_type="12" udt_precision="NONE" >
+			<udt_script><![CDATA[CREATE DOMAIN information_schema.cardinal_number integer CONSTRAINT cardinal_number_domain_check CHECK (VALUE >= 0)]]></udt_script>
+		</udt>
+		<udt name="character_data" udt_java_type="12" udt_precision="NONE" >
+			<udt_script><![CDATA[CREATE DOMAIN information_schema.character_data character varying ]]></udt_script>
+		</udt>
+		<udt name="sql_identifier" udt_java_type="12" udt_precision="NONE" >
+			<udt_script><![CDATA[CREATE DOMAIN information_schema.sql_identifier character varying ]]></udt_script>
+		</udt>
+		<udt name="time_stamp" udt_java_type="12" udt_precision="NONE" >
+			<udt_script><![CDATA[CREATE DOMAIN information_schema.time_stamp timestamp(2) with time zone DEFAULT CURRENT_TIMESTAMP(2) ]]></udt_script>
+		</udt>
+		<udt name="yes_or_no" udt_java_type="12" udt_precision="NONE" >
+			<udt_script><![CDATA[CREATE DOMAIN information_schema.yes_or_no character varying(3) CONSTRAINT yes_or_no_check CHECK (VALUE::text = ANY (ARRAY['YES'::character varying, 'NO'::character varying]::text[]))]]></udt_script>
+		</udt>
+	</schema>
+	<schema name="pg_catalog" catalogname="danfy" schemaname="pg_catalog" >
+		<procedure name="RI_FKey_cascade_del" id="Procedure_147a862" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog."RI_FKey_cascade_del"()
+ RETURNS trigger
+ LANGUAGE internal
+ PARALLEL SAFE STRICT
+AS $function$RI_FKey_cascade_del$function$
+;]]></string>
+			<comment><![CDATA[referential integrity ON DELETE CASCADE]]></comment>
+		</procedure>
+		<procedure name="RI_FKey_cascade_upd" id="Procedure_2525359" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog."RI_FKey_cascade_upd"()
+ RETURNS trigger
+ LANGUAGE internal
+ PARALLEL SAFE STRICT
+AS $function$RI_FKey_cascade_upd$function$
+;]]></string>
+			<comment><![CDATA[referential integrity ON UPDATE CASCADE]]></comment>
+		</procedure>
+		<procedure name="RI_FKey_check_ins" id="Procedure_c5ad00" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog."RI_FKey_check_ins"()
+ RETURNS trigger
+ LANGUAGE internal
+ PARALLEL SAFE STRICT
+AS $function$RI_FKey_check_ins$function$
+;]]></string>
+			<comment><![CDATA[referential integrity FOREIGN KEY ... REFERENCES]]></comment>
+		</procedure>
+		<procedure name="RI_FKey_check_upd" id="Procedure_79e71" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog."RI_FKey_check_upd"()
+ RETURNS trigger
+ LANGUAGE internal
+ PARALLEL SAFE STRICT
+AS $function$RI_FKey_check_upd$function$
+;]]></string>
+			<comment><![CDATA[referential integrity FOREIGN KEY ... REFERENCES]]></comment>
+		</procedure>
+		<procedure name="RI_FKey_noaction_del" id="Procedure_5253419" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog."RI_FKey_noaction_del"()
+ RETURNS trigger
+ LANGUAGE internal
+ PARALLEL SAFE STRICT
+AS $function$RI_FKey_noaction_del$function$
+;]]></string>
+			<comment><![CDATA[referential integrity ON DELETE NO ACTION]]></comment>
+		</procedure>
+		<procedure name="RI_FKey_noaction_upd" id="Procedure_52c88b2" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog."RI_FKey_noaction_upd"()
+ RETURNS trigger
+ LANGUAGE internal
+ PARALLEL SAFE STRICT
+AS $function$RI_FKey_noaction_upd$function$
+;]]></string>
+			<comment><![CDATA[referential integrity ON UPDATE NO ACTION]]></comment>
+		</procedure>
+		<procedure name="RI_FKey_restrict_del" id="Procedure_38cf019" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog."RI_FKey_restrict_del"()
+ RETURNS trigger
+ LANGUAGE internal
+ PARALLEL SAFE STRICT
+AS $function$RI_FKey_restrict_del$function$
+;]]></string>
+			<comment><![CDATA[referential integrity ON DELETE RESTRICT]]></comment>
+		</procedure>
+		<procedure name="RI_FKey_restrict_upd" id="Procedure_4a8f037" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog."RI_FKey_restrict_upd"()
+ RETURNS trigger
+ LANGUAGE internal
+ PARALLEL SAFE STRICT
+AS $function$RI_FKey_restrict_upd$function$
+;]]></string>
+			<comment><![CDATA[referential integrity ON UPDATE RESTRICT]]></comment>
+		</procedure>
+		<procedure name="RI_FKey_setdefault_del" id="Procedure_2830bb3" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog."RI_FKey_setdefault_del"()
+ RETURNS trigger
+ LANGUAGE internal
+ PARALLEL SAFE STRICT
+AS $function$RI_FKey_setdefault_del$function$
+;]]></string>
+			<comment><![CDATA[referential integrity ON DELETE SET DEFAULT]]></comment>
+		</procedure>
+		<procedure name="RI_FKey_setdefault_upd" id="Procedure_2f87d57" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog."RI_FKey_setdefault_upd"()
+ RETURNS trigger
+ LANGUAGE internal
+ PARALLEL SAFE STRICT
+AS $function$RI_FKey_setdefault_upd$function$
+;]]></string>
+			<comment><![CDATA[referential integrity ON UPDATE SET DEFAULT]]></comment>
+		</procedure>
+		<procedure name="RI_FKey_setnull_del" id="Procedure_9b4d91" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog."RI_FKey_setnull_del"()
+ RETURNS trigger
+ LANGUAGE internal
+ PARALLEL SAFE STRICT
+AS $function$RI_FKey_setnull_del$function$
+;]]></string>
+			<comment><![CDATA[referential integrity ON DELETE SET NULL]]></comment>
+		</procedure>
+		<procedure name="RI_FKey_setnull_upd" id="Procedure_210748b" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog."RI_FKey_setnull_upd"()
+ RETURNS trigger
+ LANGUAGE internal
+ PARALLEL SAFE STRICT
+AS $function$RI_FKey_setnull_upd$function$
+;]]></string>
+			<comment><![CDATA[referential integrity ON UPDATE SET NULL]]></comment>
+		</procedure>
+		<procedure name="abbrev" id="Procedure_35851aa" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abbrev(inet)
+ RETURNS text
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$inet_abbrev$function$
+;]]></string>
+			<comment><![CDATA[abbreviated display of inet value]]></comment>
+		</procedure>
+		<procedure name="abbrev" id="Procedure_10cba45" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abbrev(inet)
+ RETURNS text
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$inet_abbrev$function$
+;]]></string>
+			<comment><![CDATA[abbreviated display of inet value]]></comment>
+			<input_param name="$1" jt="1111" type="inet" />
+			<result_param name="returnValue" jt="12" type="text" />
+		</procedure>
+		<procedure name="abs" id="Procedure_166a72e" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abs(real)
+ RETURNS real
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$float4abs$function$
+;]]></string>
+			<comment><![CDATA[absolute value]]></comment>
+		</procedure>
+		<procedure name="abs" id="Procedure_a242be" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abs(real)
+ RETURNS real
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$float4abs$function$
+;]]></string>
+			<comment><![CDATA[absolute value]]></comment>
+			<input_param name="$1" jt="7" type="float4" />
+			<result_param name="returnValue" jt="7" type="float4" />
+		</procedure>
+		<procedure name="abs" id="Procedure_46d42a6" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abs(real)
+ RETURNS real
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$float4abs$function$
+;]]></string>
+			<comment><![CDATA[absolute value]]></comment>
+			<input_param name="$1" jt="7" type="float4" />
+			<result_param name="returnValue" jt="7" type="float4" />
+		</procedure>
+		<procedure name="abs" id="Procedure_19d3d83" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abs(real)
+ RETURNS real
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$float4abs$function$
+;]]></string>
+			<comment><![CDATA[absolute value]]></comment>
+			<input_param name="$1" jt="7" type="float4" />
+			<result_param name="returnValue" jt="7" type="float4" />
+		</procedure>
+		<procedure name="abs" id="Procedure_2071bb6" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abs(real)
+ RETURNS real
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$float4abs$function$
+;]]></string>
+			<comment><![CDATA[absolute value]]></comment>
+			<input_param name="$1" jt="7" type="float4" />
+			<result_param name="returnValue" jt="7" type="float4" />
+		</procedure>
+		<procedure name="abs" id="Procedure_1fec65f" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abs(real)
+ RETURNS real
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$float4abs$function$
+;]]></string>
+			<comment><![CDATA[absolute value]]></comment>
+			<input_param name="$1" jt="7" type="float4" />
+			<result_param name="returnValue" jt="7" type="float4" />
+		</procedure>
+		<procedure name="abstime" id="Procedure_33cd6db" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abstime(timestamp with time zone)
+ RETURNS abstime
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$timestamptz_abstime$function$
+;]]></string>
+			<comment><![CDATA[convert timestamp with time zone to abstime]]></comment>
+		</procedure>
+		<procedure name="abstime" id="Procedure_2cebf34" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abstime(timestamp with time zone)
+ RETURNS abstime
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$timestamptz_abstime$function$
+;]]></string>
+			<comment><![CDATA[convert timestamp with time zone to abstime]]></comment>
+			<input_param name="$1" jt="93" type="timestamptz" />
+			<result_param name="returnValue" jt="1111" type="abstime" />
+		</procedure>
+		<procedure name="abstimeeq" id="Procedure_262cb86" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abstimeeq(abstime, abstime)
+ RETURNS boolean
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT LEAKPROOF
+AS $function$abstimeeq$function$
+;]]></string>
+			<comment><![CDATA[implementation of = operator]]></comment>
+		</procedure>
+		<procedure name="abstimege" id="Procedure_44de8c3" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abstimege(abstime, abstime)
+ RETURNS boolean
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT LEAKPROOF
+AS $function$abstimege$function$
+;]]></string>
+			<comment><![CDATA[implementation of >= operator]]></comment>
+		</procedure>
+		<procedure name="abstimegt" id="Procedure_a5b884" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abstimegt(abstime, abstime)
+ RETURNS boolean
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT LEAKPROOF
+AS $function$abstimegt$function$
+;]]></string>
+			<comment><![CDATA[implementation of > operator]]></comment>
+		</procedure>
+		<procedure name="abstimein" id="Procedure_5f5a303" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abstimein(cstring)
+ RETURNS abstime
+ LANGUAGE internal
+ STABLE PARALLEL SAFE STRICT
+AS $function$abstimein$function$
+;]]></string>
+			<comment><![CDATA[I/O]]></comment>
+		</procedure>
+		<procedure name="abstimele" id="Procedure_41926a" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abstimele(abstime, abstime)
+ RETURNS boolean
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT LEAKPROOF
+AS $function$abstimele$function$
+;]]></string>
+			<comment><![CDATA[implementation of <= operator]]></comment>
+		</procedure>
+		<procedure name="abstimelt" id="Procedure_992347" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abstimelt(abstime, abstime)
+ RETURNS boolean
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT LEAKPROOF
+AS $function$abstimelt$function$
+;]]></string>
+			<comment><![CDATA[implementation of < operator]]></comment>
+		</procedure>
+		<procedure name="abstimene" id="Procedure_1acd98c" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abstimene(abstime, abstime)
+ RETURNS boolean
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT LEAKPROOF
+AS $function$abstimene$function$
+;]]></string>
+			<comment><![CDATA[implementation of <> operator]]></comment>
+		</procedure>
+		<procedure name="abstimeout" id="Procedure_4ee3007" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abstimeout(abstime)
+ RETURNS cstring
+ LANGUAGE internal
+ STABLE PARALLEL SAFE STRICT
+AS $function$abstimeout$function$
+;]]></string>
+			<comment><![CDATA[I/O]]></comment>
+		</procedure>
+		<procedure name="abstimerecv" id="Procedure_3b6838b" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abstimerecv(internal)
+ RETURNS abstime
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$abstimerecv$function$
+;]]></string>
+			<comment><![CDATA[I/O]]></comment>
+		</procedure>
+		<procedure name="abstimesend" id="Procedure_422c7b1" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abstimesend(abstime)
+ RETURNS bytea
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$abstimesend$function$
+;]]></string>
+			<comment><![CDATA[I/O]]></comment>
+		</procedure>
+		<procedure name="aclcontains" id="Procedure_3d73c2f" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.aclcontains(aclitem[], aclitem)
+ RETURNS boolean
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$aclcontains$function$
+;]]></string>
+			<comment><![CDATA[contains]]></comment>
+		</procedure>
+		<procedure name="acldefault" id="Procedure_f6e899" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.acldefault("char", oid)
+ RETURNS aclitem[]
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$acldefault_sql$function$
+;]]></string>
+			<comment><![CDATA[TODO]]></comment>
+		</procedure>
+		<procedure name="aclexplode" id="Procedure_2fb245b" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.aclexplode(acl aclitem[], OUT grantor oid, OUT grantee oid, OUT privilege_type text, OUT is_grantable boolean)
+ RETURNS SETOF record
+ LANGUAGE internal
+ STABLE PARALLEL SAFE STRICT ROWS 10
+AS $function$aclexplode$function$
+;]]></string>
+			<comment><![CDATA[convert ACL item array to table, for use by information schema]]></comment>
+		</procedure>
+		<procedure name="aclinsert" id="Procedure_2efbe4f" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.aclinsert(aclitem[], aclitem)
+ RETURNS aclitem[]
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$aclinsert$function$
+;]]></string>
+			<comment><![CDATA[add/update ACL item]]></comment>
+		</procedure>
+		<procedure name="aclitemeq" id="Procedure_3519c70" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.aclitemeq(aclitem, aclitem)
+ RETURNS boolean
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$aclitem_eq$function$
+;]]></string>
+			<comment><![CDATA[implementation of = operator]]></comment>
+		</procedure>
+		<procedure name="aclitemin" id="Procedure_37f8781" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.aclitemin(cstring)
+ RETURNS aclitem
+ LANGUAGE internal
+ STABLE PARALLEL SAFE STRICT
+AS $function$aclitemin$function$
+;]]></string>
+			<comment><![CDATA[I/O]]></comment>
+		</procedure>
+		<procedure name="aclitemout" id="Procedure_3af1a3b" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.aclitemout(aclitem)
+ RETURNS cstring
+ LANGUAGE internal
+ STABLE PARALLEL SAFE STRICT
+AS $function$aclitemout$function$
+;]]></string>
+			<comment><![CDATA[I/O]]></comment>
+		</procedure>
+		<procedure name="aclremove" id="Procedure_1a493c3" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.aclremove(aclitem[], aclitem)
+ RETURNS aclitem[]
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$aclremove$function$
+;]]></string>
+			<comment><![CDATA[remove ACL item]]></comment>
+		</procedure>
+		<procedure name="acos" id="Procedure_566b069" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.acos(double precision)
+ RETURNS double precision
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$dacos$function$
+;]]></string>
+			<comment><![CDATA[arccosine]]></comment>
+		</procedure>
+		<procedure name="acosd" id="Procedure_bd8d3" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.acosd(double precision)
+ RETURNS double precision
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$dacosd$function$
+;]]></string>
+			<comment><![CDATA[arccosine, degrees]]></comment>
+		</procedure>
+		<procedure name="age" id="Procedure_53786be" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.age(xid)
+ RETURNS integer
+ LANGUAGE internal
+ STABLE PARALLEL RESTRICTED STRICT
+AS $function$xid_age$function$
+;]]></string>
+			<comment><![CDATA[age of a transaction ID, in transactions before current transaction]]></comment>
+		</procedure>
+		<procedure name="age" id="Procedure_17fc4fc" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.age(xid)
+ RETURNS integer
+ LANGUAGE internal
+ STABLE PARALLEL RESTRICTED STRICT
+AS $function$xid_age$function$
+;]]></string>
+			<comment><![CDATA[age of a transaction ID, in transactions before current transaction]]></comment>
+			<input_param name="$1" jt="1111" type="xid" />
+			<result_param name="returnValue" jt="4" type="int4" />
+		</procedure>
+		<procedure name="age" id="Procedure_4152fbd" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.age(xid)
+ RETURNS integer
+ LANGUAGE internal
+ STABLE PARALLEL RESTRICTED STRICT
+AS $function$xid_age$function$
+;]]></string>
+			<comment><![CDATA[age of a transaction ID, in transactions before current transaction]]></comment>
+			<input_param name="$1" jt="1111" type="xid" />
+			<result_param name="returnValue" jt="4" type="int4" />
+		</procedure>
+		<procedure name="age" id="Procedure_2af6e51" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.age(xid)
+ RETURNS integer
+ LANGUAGE internal
+ STABLE PARALLEL RESTRICTED STRICT
+AS $function$xid_age$function$
+;]]></string>
+			<comment><![CDATA[age of a transaction ID, in transactions before current transaction]]></comment>
+			<input_param name="$1" jt="1111" type="xid" />
+			<result_param name="returnValue" jt="4" type="int4" />
+		</procedure>
+		<procedure name="age" id="Procedure_2254d95" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.age(xid)
+ RETURNS integer
+ LANGUAGE internal
+ STABLE PARALLEL RESTRICTED STRICT
+AS $function$xid_age$function$
+;]]></string>
+			<comment><![CDATA[age of a transaction ID, in transactions before current transaction]]></comment>
+			<input_param name="$1" jt="1111" type="xid" />
+			<result_param name="returnValue" jt="4" type="int4" />
+		</procedure>
+		<procedure name="amvalidate" id="Procedure_450adaa" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.amvalidate(oid)
+ RETURNS boolean
+ LANGUAGE internal
+ PARALLEL SAFE STRICT
+AS $function$amvalidate$function$
+;]]></string>
+			<comment><![CDATA[validate an operator class]]></comment>
+		</procedure>
+		<procedure name="any_in" id="Procedure_1948f69" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.any_in(cstring)
+ RETURNS "any"
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$any_in$function$
+;]]></string>
+			<comment><![CDATA[I/O]]></comment>
+		</procedure>
+		<procedure name="any_out" id="Procedure_5ca65b0" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.any_out("any")
+ RETURNS cstring
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$any_out$function$
+;]]></string>
+			<comment><![CDATA[I/O]]></comment>
+		</procedure>
+		<procedure name="anyarray_in" id="Procedure_d97d9d" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.anyarray_in(cstring)
+ RETURNS anyarray
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$anyarray_in$function$
+;]]></string>
+			<comment><![CDATA[I/O]]></comment>
+		</procedure>
+		<procedure name="anyarray_out" id="Procedure_2fd92fa" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.anyarray_out(anyarray)
+ RETURNS cstring
+ LANGUAGE internal
+ STABLE PARALLEL SAFE STRICT
+AS $function$anyarray_out$function$
+;]]></string>
+			<comment><![CDATA[I/O]]></comment>
+		</procedure>
+		<procedure name="anyarray_recv" id="Procedure_2314de0" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.anyarray_recv(internal)
+ RETURNS anyarray
+ LANGUAGE internal
+ STABLE PARALLEL SAFE STRICT
+AS $function$anyarray_recv$function$
+;]]></string>
+			<comment><![CDATA[I/O]]></comment>
+		</procedure>
+		<procedure name="anyarray_send" id="Procedure_34a8b15" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.anyarray_send(anyarray)
+ RETURNS bytea
+ LANGUAGE internal
+ STABLE PARALLEL SAFE STRICT
+AS $function$anyarray_send$function$
+;]]></string>
+			<comment><![CDATA[I/O]]></comment>
+		</procedure>
+		<procedure name="anyelement_in" id="Procedure_32e70c2" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.anyelement_in(cstring)
+ RETURNS anyelement
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$anyelement_in$function$
+;]]></string>
+			<comment><![CDATA[I/O]]></comment>
+		</procedure>
+		<procedure name="anyelement_out" id="Procedure_3a48ed1" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.anyelement_out(anyelement)
+ RETURNS cstring
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$anyelement_out$function$
+;]]></string>
+			<comment><![CDATA[I/O]]></comment>
+		</procedure>
+		<procedure name="anyenum_in" id="Procedure_58353c4" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.anyenum_in(cstring)
+ RETURNS anyenum
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$anyenum_in$function$
+;]]></string>
+			<comment><![CDATA[I/O]]></comment>
+		</procedure>
+		<procedure name="anyenum_out" id="Procedure_15e5a6a" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.anyenum_out(anyenum)
+ RETURNS cstring
+ LANGUAGE internal
+ STABLE PARALLEL SAFE STRICT
+AS $function$anyenum_out$function$
+;]]></string>
+			<comment><![CDATA[I/O]]></comment>
+		</procedure>
+		<procedure name="anynonarray_in" id="Procedure_4be3afb" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.anynonarray_in(cstring)
+ RETURNS anynonarray
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$anynonarray_in$function$
+;]]></string>
+			<comment><![CDATA[I/O]]></comment>
+		</procedure>
+		<procedure name="anynonarray_out" id="Procedure_3331c5b" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.anynonarray_out(anynonarray)
+ RETURNS cstring
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$anynonarray_out$function$
+;]]></string>
+			<comment><![CDATA[I/O]]></comment>
+		</procedure>
+		<procedure name="anyrange_in" id="Procedure_2494dfa" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.anyrange_in(cstring, oid, integer)
+ RETURNS anyrange
+ LANGUAGE internal
+ STABLE PARALLEL SAFE STRICT
+AS $function$anyrange_in$function$
+;]]></string>
+			<comment><![CDATA[I/O]]></comment>
+		</procedure>
+		<procedure name="anyrange_out" id="Procedure_366c5ff" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.anyrange_out(anyrange)
+ RETURNS cstring
+ LANGUAGE internal
+ STABLE PARALLEL SAFE STRICT
+AS $function$anyrange_out$function$
+;]]></string>
+			<comment><![CDATA[I/O]]></comment>
+		</procedure>
+		<procedure name="anytextcat" id="Procedure_10d8314" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.anytextcat(anynonarray, text)
+ RETURNS text
+ LANGUAGE sql
+ STABLE PARALLEL SAFE STRICT COST 1
+AS $function$select $1::pg_catalog.text || $2$function$
+;]]></string>
+			<comment><![CDATA[implementation of || operator]]></comment>
+		</procedure>
+		<procedure name="area" id="Procedure_4af344e" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.area(circle)
+ RETURNS double precision
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$circle_area$function$
+;]]></string>
+			<comment><![CDATA[area of circle]]></comment>
+		</procedure>
+		<procedure name="area" id="Procedure_319b976" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.area(circle)
+ RETURNS double precision
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$circle_area$function$
+;]]></string>
+			<comment><![CDATA[area of circle]]></comment>
+			<input_param name="$1" jt="1111" type="circle" />
+			<result_param name="returnValue" jt="8" type="float8" />
+		</procedure>
+		<procedure name="area" id="Procedure_527a48f" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.area(circle)
+ RETURNS double precision
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$circle_area$function$
+;]]></string>
+			<comment><![CDATA[area of circle]]></comment>
+			<input_param name="$1" jt="1111" type="circle" />
+			<result_param name="returnValue" jt="8" type="float8" />
+		</procedure>
+		<procedure name="areajoinsel" id="Procedure_54c8132" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.areajoinsel(internal, oid, internal, smallint, internal)
+ RETURNS double precision
+ LANGUAGE internal
+ STABLE PARALLEL SAFE STRICT
+AS $function$areajoinsel$function$
+;]]></string>
+			<comment><![CDATA[join selectivity for area-comparison operators]]></comment>
+		</procedure>
+		<procedure name="areasel" id="Procedure_41c533" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.areasel(internal, oid, internal, integer)
+ RETURNS double precision
+ LANGUAGE internal
+ STABLE PARALLEL SAFE STRICT
+AS $function$areasel$function$
+;]]></string>
+			<comment><![CDATA[restriction selectivity for area-comparison operators]]></comment>
+		</procedure>
+	</schema>
+	<schema name="public" catalogname="danfy" schemaname="public" />
+	<connector name="PostgreSQL" database="PostgreSQL" host="localhost" port="5432" instance="danfy" user="postgres" passwd="MTIzNDU2" />
+	<connector name="PostgreSQL" database="PostgreSQL" driver_class="org.postgresql.Driver" driver_jar="postgresql-42.2.2.jar" driver_desc="Standard" host="localhost" port="5432" instance="danfy" user="postgres" passwd="MTIzNDU2" />
+	<connector name="PostgreSQL" database="PostgreSQL" driver_class="org.postgresql.Driver" driver_jar="postgresql-42.2.2.jar" driver_desc="Standard" host="localhost" port="5432" instance="danfy" user="postgres" passwd="MTIzNDU2" />
+	<layout name="Default Layout" id="Layout_423e0c" show_relation="columns" >
+		<entity schema="danfy" name="tb_retencao" color="C1D8EE" x="560" y="896" />
+		<entity schema="danfy" name="tb_imposto" color="C1D8EE" x="512" y="672" />
+		<entity schema="danfy" name="tb_icms" color="C1D8EE" x="304" y="784" />
+		<entity schema="danfy" name="tb_produto" color="C1D8EE" x="48" y="352" />
+		<entity schema="danfy" name="tb_endereco" color="C1D8EE" x="912" y="400" />
+		<entity schema="danfy" name="tb_pais" color="3986C1" x="1072" y="512" />
+		<entity schema="danfy" name="tb_municipio" color="C1D8EE" x="1008" y="656" />
+		<entity schema="danfy" name="tb_total_movimento" color="C1D8EE" x="960" y="64" />
+		<entity schema="danfy" name="tb_total_servico" color="C1D8EE" x="976" y="192" />
+		<entity schema="danfy" name="tb_acumulado" color="C1D8EE" x="1328" y="160" />
+		<entity schema="danfy" name="tb_total_soma" color="C1D8EE" x="1152" y="128" />
+		<entity schema="danfy" name="tb_pessoa" color="C1D8EE" x="672" y="464" />
+		<entity schema="danfy" name="tb_movimento" color="C1D8EE" x="480" y="464" />
+		<entity schema="danfy" name="tb_servico" color="C1D8EE" x="672" y="656" />
+		<entity schema="danfy" name="tb_nota_servico" color="C1D8EE" x="736" y="880" />
+		<entity schema="danfy" name="tb_total" color="C1D8EE" x="720" y="64" />
+		<entity schema="danfy" name="tb_nota" color="3986C1" x="192" y="416" />
+		<entity schema="danfy" name="tb_aliquota" color="C1D8EE" x="512" y="48" />
+		<entity schema="danfy" name="tb_estado" color="C1D8EE" x="1216" y="416" />
+	</layout>
+</project>

@@ -1,0 +1,1 @@
+INSERT INTO tb_pais VALUES (1, 'Brasil');
