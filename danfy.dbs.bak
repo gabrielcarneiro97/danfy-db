@@ -34,7 +34,7 @@
 			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
 			<column name="logradouro" type="text" jt="12" mandatory="y" />
 			<column name="numero" type="text" jt="12" mandatory="y" />
-			<column name="cep" type="varchar" length="8" jt="12" />
+			<column name="cep" type="text" jt="12" />
 			<column name="complemento" type="text" jt="12" />
 			<column name="municipio_id" type="integer" jt="4" />
 			<column name="estado_id" type="integer" jt="4" />
@@ -129,11 +129,11 @@
 			<column name="data_hora" type="date" jt="91" />
 			<column name="numero" type="text" jt="12" />
 			<column name="status" type="text" length="1" jt="12" />
-			<column name="tipo" type="text" length="2" jt="12" />
-			<column name="destinatario_contribuinte" type="text" length="2" jt="12" />
+			<column name="tipo" type="char" length="1" jt="1" />
+			<column name="destinatario_contribuite" type="char" length="1" jt="1" />
 			<column name="estado_destino_id" type="integer" jt="4" />
 			<column name="estado_gerador_id" type="integer" jt="4" />
-			<column name="valor" type="numeric" length="32" decimal="2" jt="2" />
+			<column name="valor" type="numeric" length="9" decimal="2" jt="2" />
 			<index name="pk_tb_nota_chave" unique="PRIMARY_KEY" >
 				<column name="chave" />
 			</index>
@@ -158,8 +158,8 @@
 			<column name="status" type="text" jt="12" mandatory="y" />
 			<column name="data_hora" type="date" jt="91" mandatory="y" />
 			<column name="retencao_id" type="integer" jt="4" />
-			<column name="valor" type="numeric" length="32" decimal="2" jt="2" />
-			<column name="iss" type="numeric" length="32" decimal="2" jt="2" />
+			<column name="valor" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="iss" type="numeric" length="9" decimal="2" jt="2" />
 			<index name="pk_tb_nota_servico_chave" unique="PRIMARY_KEY" >
 				<column name="chave" />
 			</index>
@@ -187,7 +187,7 @@
 			<index name="pk_tb_pessoa_cpfcnpj" unique="PRIMARY_KEY" >
 				<column name="cpfcnpj" />
 			</index>
-			<fk name="endereco" to_schema="danfy" to_table="tb_endereco" >
+			<fk name="endereco" to_schema="danfy" to_table="tb_endereco" delete_action="cascade" update_action="cascade" >
 				<fk_column name="endereco_id" pk="id" />
 			</fk>
 		</table>
@@ -196,12 +196,12 @@
 			<column name="nome" type="text" jt="12" mandatory="y" />
 			<column name="descricao" type="text" jt="12" mandatory="y" />
 			<column name="quantidade" type="integer" jt="4" />
-			<column name="valor" type="numeric" length="32" decimal="2" jt="2" />
+			<column name="valor" type="numeric" length="9" decimal="2" jt="2" />
 			<column name="nota_chave" type="text" jt="12" />
 			<index name="pk_tb_produto_id" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
-			<fk name="nota_chave" to_schema="danfy" to_table="tb_nota" delete_action="cascade" update_action="cascade" >
+			<fk name="nota_chave" to_schema="danfy" to_table="tb_nota" >
 				<fk_column name="nota_chave" pk="chave" />
 			</fk>
 		</table>
@@ -452,6 +452,15 @@ AS $function$RI_FKey_setnull_upd$function$
 ;]]></string>
 			<comment><![CDATA[referential integrity ON UPDATE SET NULL]]></comment>
 		</procedure>
+		<procedure name="abbrev" id="Procedure_35851aa" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abbrev(inet)
+ RETURNS text
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$inet_abbrev$function$
+;]]></string>
+			<comment><![CDATA[abbreviated display of inet value]]></comment>
+		</procedure>
 		<procedure name="abbrev" id="Procedure_10cba45" isSystem="false" params_known="y" >
 			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abbrev(inet)
  RETURNS text
@@ -463,16 +472,7 @@ AS $function$inet_abbrev$function$
 			<input_param name="$1" jt="1111" type="inet" />
 			<result_param name="returnValue" jt="12" type="text" />
 		</procedure>
-		<procedure name="abbrev" id="Procedure_35851aa" isSystem="false" params_known="n" >
-			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abbrev(inet)
- RETURNS text
- LANGUAGE internal
- IMMUTABLE PARALLEL SAFE STRICT
-AS $function$inet_abbrev$function$
-;]]></string>
-			<comment><![CDATA[abbreviated display of inet value]]></comment>
-		</procedure>
-		<procedure name="abs" id="Procedure_1fec65f" isSystem="false" params_known="y" >
+		<procedure name="abs" id="Procedure_166a72e" isSystem="false" params_known="n" >
 			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abs(real)
  RETURNS real
  LANGUAGE internal
@@ -480,21 +480,8 @@ AS $function$inet_abbrev$function$
 AS $function$float4abs$function$
 ;]]></string>
 			<comment><![CDATA[absolute value]]></comment>
-			<input_param name="$1" jt="7" type="float4" />
-			<result_param name="returnValue" jt="7" type="float4" />
 		</procedure>
-		<procedure name="abs" id="Procedure_2071bb6" isSystem="false" params_known="y" >
-			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abs(real)
- RETURNS real
- LANGUAGE internal
- IMMUTABLE PARALLEL SAFE STRICT
-AS $function$float4abs$function$
-;]]></string>
-			<comment><![CDATA[absolute value]]></comment>
-			<input_param name="$1" jt="7" type="float4" />
-			<result_param name="returnValue" jt="7" type="float4" />
-		</procedure>
-		<procedure name="abs" id="Procedure_19d3d83" isSystem="false" params_known="y" >
+		<procedure name="abs" id="Procedure_a242be" isSystem="false" params_known="y" >
 			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abs(real)
  RETURNS real
  LANGUAGE internal
@@ -516,7 +503,7 @@ AS $function$float4abs$function$
 			<input_param name="$1" jt="7" type="float4" />
 			<result_param name="returnValue" jt="7" type="float4" />
 		</procedure>
-		<procedure name="abs" id="Procedure_a242be" isSystem="false" params_known="y" >
+		<procedure name="abs" id="Procedure_19d3d83" isSystem="false" params_known="y" >
 			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abs(real)
  RETURNS real
  LANGUAGE internal
@@ -527,7 +514,7 @@ AS $function$float4abs$function$
 			<input_param name="$1" jt="7" type="float4" />
 			<result_param name="returnValue" jt="7" type="float4" />
 		</procedure>
-		<procedure name="abs" id="Procedure_166a72e" isSystem="false" params_known="n" >
+		<procedure name="abs" id="Procedure_2071bb6" isSystem="false" params_known="y" >
 			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abs(real)
  RETURNS real
  LANGUAGE internal
@@ -535,6 +522,28 @@ AS $function$float4abs$function$
 AS $function$float4abs$function$
 ;]]></string>
 			<comment><![CDATA[absolute value]]></comment>
+			<input_param name="$1" jt="7" type="float4" />
+			<result_param name="returnValue" jt="7" type="float4" />
+		</procedure>
+		<procedure name="abs" id="Procedure_1fec65f" isSystem="false" params_known="y" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abs(real)
+ RETURNS real
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$float4abs$function$
+;]]></string>
+			<comment><![CDATA[absolute value]]></comment>
+			<input_param name="$1" jt="7" type="float4" />
+			<result_param name="returnValue" jt="7" type="float4" />
+		</procedure>
+		<procedure name="abstime" id="Procedure_33cd6db" isSystem="false" params_known="n" >
+			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abstime(timestamp with time zone)
+ RETURNS abstime
+ LANGUAGE internal
+ IMMUTABLE PARALLEL SAFE STRICT
+AS $function$timestamptz_abstime$function$
+;]]></string>
+			<comment><![CDATA[convert timestamp with time zone to abstime]]></comment>
 		</procedure>
 		<procedure name="abstime" id="Procedure_2cebf34" isSystem="false" params_known="y" >
 			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abstime(timestamp with time zone)
@@ -546,15 +555,6 @@ AS $function$timestamptz_abstime$function$
 			<comment><![CDATA[convert timestamp with time zone to abstime]]></comment>
 			<input_param name="$1" jt="93" type="timestamptz" />
 			<result_param name="returnValue" jt="1111" type="abstime" />
-		</procedure>
-		<procedure name="abstime" id="Procedure_33cd6db" isSystem="false" params_known="n" >
-			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abstime(timestamp with time zone)
- RETURNS abstime
- LANGUAGE internal
- IMMUTABLE PARALLEL SAFE STRICT
-AS $function$timestamptz_abstime$function$
-;]]></string>
-			<comment><![CDATA[convert timestamp with time zone to abstime]]></comment>
 		</procedure>
 		<procedure name="abstimeeq" id="Procedure_262cb86" isSystem="false" params_known="n" >
 			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.abstimeeq(abstime, abstime)
@@ -736,7 +736,7 @@ AS $function$dacosd$function$
 ;]]></string>
 			<comment><![CDATA[arccosine, degrees]]></comment>
 		</procedure>
-		<procedure name="age" id="Procedure_2254d95" isSystem="false" params_known="y" >
+		<procedure name="age" id="Procedure_53786be" isSystem="false" params_known="n" >
 			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.age(xid)
  RETURNS integer
  LANGUAGE internal
@@ -744,10 +744,8 @@ AS $function$dacosd$function$
 AS $function$xid_age$function$
 ;]]></string>
 			<comment><![CDATA[age of a transaction ID, in transactions before current transaction]]></comment>
-			<input_param name="$1" jt="1111" type="xid" />
-			<result_param name="returnValue" jt="4" type="int4" />
 		</procedure>
-		<procedure name="age" id="Procedure_2af6e51" isSystem="false" params_known="y" >
+		<procedure name="age" id="Procedure_17fc4fc" isSystem="false" params_known="y" >
 			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.age(xid)
  RETURNS integer
  LANGUAGE internal
@@ -769,7 +767,7 @@ AS $function$xid_age$function$
 			<input_param name="$1" jt="1111" type="xid" />
 			<result_param name="returnValue" jt="4" type="int4" />
 		</procedure>
-		<procedure name="age" id="Procedure_17fc4fc" isSystem="false" params_known="y" >
+		<procedure name="age" id="Procedure_2af6e51" isSystem="false" params_known="y" >
 			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.age(xid)
  RETURNS integer
  LANGUAGE internal
@@ -780,7 +778,7 @@ AS $function$xid_age$function$
 			<input_param name="$1" jt="1111" type="xid" />
 			<result_param name="returnValue" jt="4" type="int4" />
 		</procedure>
-		<procedure name="age" id="Procedure_53786be" isSystem="false" params_known="n" >
+		<procedure name="age" id="Procedure_2254d95" isSystem="false" params_known="y" >
 			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.age(xid)
  RETURNS integer
  LANGUAGE internal
@@ -788,6 +786,8 @@ AS $function$xid_age$function$
 AS $function$xid_age$function$
 ;]]></string>
 			<comment><![CDATA[age of a transaction ID, in transactions before current transaction]]></comment>
+			<input_param name="$1" jt="1111" type="xid" />
+			<result_param name="returnValue" jt="4" type="int4" />
 		</procedure>
 		<procedure name="amvalidate" id="Procedure_450adaa" isSystem="false" params_known="n" >
 			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.amvalidate(oid)
@@ -933,7 +933,7 @@ AS $function$select $1::pg_catalog.text || $2$function$
 ;]]></string>
 			<comment><![CDATA[implementation of || operator]]></comment>
 		</procedure>
-		<procedure name="area" id="Procedure_527a48f" isSystem="false" params_known="y" >
+		<procedure name="area" id="Procedure_4af344e" isSystem="false" params_known="n" >
 			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.area(circle)
  RETURNS double precision
  LANGUAGE internal
@@ -941,8 +941,6 @@ AS $function$select $1::pg_catalog.text || $2$function$
 AS $function$circle_area$function$
 ;]]></string>
 			<comment><![CDATA[area of circle]]></comment>
-			<input_param name="$1" jt="1111" type="circle" />
-			<result_param name="returnValue" jt="8" type="float8" />
 		</procedure>
 		<procedure name="area" id="Procedure_319b976" isSystem="false" params_known="y" >
 			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.area(circle)
@@ -955,7 +953,7 @@ AS $function$circle_area$function$
 			<input_param name="$1" jt="1111" type="circle" />
 			<result_param name="returnValue" jt="8" type="float8" />
 		</procedure>
-		<procedure name="area" id="Procedure_4af344e" isSystem="false" params_known="n" >
+		<procedure name="area" id="Procedure_527a48f" isSystem="false" params_known="y" >
 			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.area(circle)
  RETURNS double precision
  LANGUAGE internal
@@ -963,6 +961,8 @@ AS $function$circle_area$function$
 AS $function$circle_area$function$
 ;]]></string>
 			<comment><![CDATA[area of circle]]></comment>
+			<input_param name="$1" jt="1111" type="circle" />
+			<result_param name="returnValue" jt="8" type="float8" />
 		</procedure>
 		<procedure name="areajoinsel" id="Procedure_54c8132" isSystem="false" params_known="n" >
 			<string><![CDATA[CREATE OR REPLACE FUNCTION pg_catalog.areajoinsel(internal, oid, internal, smallint, internal)
@@ -984,29 +984,28 @@ AS $function$areasel$function$
 		</procedure>
 	</schema>
 	<schema name="public" catalogname="danfy" schemaname="public" />
-	<connector name="PostgreSQL" database="PostgreSQL" driver_class="org.postgresql.Driver" driver_jar="postgresql-42.2.2.jar" driver_desc="Standard" host="localhost" port="5432" instance="danfy" user="postgres" passwd="MTIzNDU2" />
-	<connector name="PostgreSQL" database="PostgreSQL" driver_class="org.postgresql.Driver" driver_jar="postgresql-42.2.2.jar" driver_desc="Standard" host="localhost" port="5432" instance="danfy" user="postgres" passwd="MTIzNDU2" />
-	<connector name="PostgreSQL" database="PostgreSQL" driver_class="org.postgresql.Driver" driver_jar="postgresql-42.2.2.jar" driver_desc="Standard" host="localhost" port="5432" instance="danfy" user="postgres" passwd="MTIzNDU2" />
 	<connector name="PostgreSQL" database="PostgreSQL" host="localhost" port="5432" instance="danfy" user="postgres" passwd="MTIzNDU2" />
-	<layout name="Default Layout" id="Layout_423e0c" confirmed="y" show_relation="columns" >
+	<connector name="PostgreSQL" database="PostgreSQL" driver_class="org.postgresql.Driver" driver_jar="postgresql-42.2.2.jar" driver_desc="Standard" host="localhost" port="5432" instance="danfy" user="postgres" passwd="MTIzNDU2" />
+	<connector name="PostgreSQL" database="PostgreSQL" driver_class="org.postgresql.Driver" driver_jar="postgresql-42.2.2.jar" driver_desc="Standard" host="localhost" port="5432" instance="danfy" user="postgres" passwd="MTIzNDU2" />
+	<layout name="Default Layout" id="Layout_423e0c" show_relation="columns" >
 		<entity schema="danfy" name="tb_retencao" color="C1D8EE" x="560" y="896" />
 		<entity schema="danfy" name="tb_imposto" color="C1D8EE" x="512" y="672" />
 		<entity schema="danfy" name="tb_icms" color="C1D8EE" x="304" y="784" />
+		<entity schema="danfy" name="tb_produto" color="C1D8EE" x="48" y="352" />
+		<entity schema="danfy" name="tb_endereco" color="C1D8EE" x="912" y="400" />
+		<entity schema="danfy" name="tb_pais" color="3986C1" x="1072" y="512" />
+		<entity schema="danfy" name="tb_municipio" color="C1D8EE" x="1008" y="656" />
 		<entity schema="danfy" name="tb_total_movimento" color="C1D8EE" x="960" y="64" />
 		<entity schema="danfy" name="tb_total_servico" color="C1D8EE" x="976" y="192" />
 		<entity schema="danfy" name="tb_acumulado" color="C1D8EE" x="1328" y="160" />
 		<entity schema="danfy" name="tb_total_soma" color="C1D8EE" x="1152" y="128" />
+		<entity schema="danfy" name="tb_pessoa" color="C1D8EE" x="672" y="464" />
 		<entity schema="danfy" name="tb_movimento" color="C1D8EE" x="480" y="464" />
 		<entity schema="danfy" name="tb_servico" color="C1D8EE" x="672" y="656" />
+		<entity schema="danfy" name="tb_nota_servico" color="C1D8EE" x="736" y="880" />
 		<entity schema="danfy" name="tb_total" color="C1D8EE" x="720" y="64" />
+		<entity schema="danfy" name="tb_nota" color="3986C1" x="192" y="416" />
 		<entity schema="danfy" name="tb_aliquota" color="C1D8EE" x="512" y="48" />
 		<entity schema="danfy" name="tb_estado" color="C1D8EE" x="1216" y="416" />
-		<entity schema="danfy" name="tb_pais" color="3986C1" x="1072" y="512" />
-		<entity schema="danfy" name="tb_municipio" color="C1D8EE" x="1008" y="656" />
-		<entity schema="danfy" name="tb_endereco" color="C1D8EE" x="912" y="400" />
-		<entity schema="danfy" name="tb_pessoa" color="C1D8EE" x="672" y="464" />
-		<entity schema="danfy" name="tb_nota" color="3986C1" x="192" y="416" />
-		<entity schema="danfy" name="tb_produto" color="C1D8EE" x="48" y="352" />
-		<entity schema="danfy" name="tb_nota_servico" color="C1D8EE" x="736" y="880" />
 	</layout>
 </project>
