@@ -5,6 +5,88 @@ const pg = require('knex')({
   searchPath: ['knex', 'danfy'],
 });
 
+const icmsEstados = {
+  SC: {
+    externo: 0.12,
+    interno: 0.12,
+  },
+  DF: {
+    externo: 0.07,
+    interno: 0.12,
+  },
+  MS: {
+    externo: 0.07,
+    interno: 0.17,
+  },
+  MT: {
+    externo: 0.07,
+    interno: 0.17,
+  },
+  SP: {
+    externo: 0.12,
+    interno: 0.18,
+  },
+  RJ: {
+    externo: 0.12,
+    interno: 0.18,
+  },
+  GO: {
+    externo: 0.07,
+    interno: 0.17,
+  },
+  RO: {
+    externo: 0.07,
+    interno: 0.175,
+  },
+  ES: {
+    externo: 0.07,
+    interno: 0.12,
+  },
+  AC: {
+    externo: 0.07,
+    interno: 0.17,
+  },
+  CE: {
+    externo: 0.07,
+    interno: 0.17,
+  },
+  PR: {
+    externo: 0.12,
+    interno: 0.18,
+  },
+  PI: {
+    externo: 0.07,
+    interno: 0.17,
+  },
+  PE: {
+    externo: 0.12,
+    interno: 0.18,
+  },
+  MA: {
+    externo: 0.07,
+    interno: 0.18,
+  },
+  PA: {
+    externo: 0.07,
+    interno: 0.17,
+  },
+  RN: {
+    externo: 0.07,
+    interno: 0.18,
+  },
+  BA: {
+    externo: 0.07,
+    interno: 0.18,
+  },
+  RS: {
+    externo: 0.12,
+    interno: 0.18,
+  },
+  TO: {
+    externo: 0.07,
+    interno: 0.18,
+  },
+};
 
 function getEstado(sigla) {
   return {
@@ -532,3 +614,11 @@ function round(num) {
 // });
 
 // pg.insert({ cpfcnpj: 'INTERNO', nome: 'INTERNO' }).into('tb_pessoa').catch(e => console.error(e));
+
+// Object.keys(icmsEstados).forEach((sigla) => {
+//   pg.insert({
+//     estado_id: getEstado(sigla),
+//     interno: icmsEstados[sigla].interno,
+//     externo: icmsEstados[sigla].externo,
+//   }).into('tb_difal_aliquota').catch(e => console.log(e));
+// });
