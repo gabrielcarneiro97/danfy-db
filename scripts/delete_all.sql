@@ -1,0 +1,15 @@
+DELETE FROM tb_acumulado;
+DELETE FROM tb_aliquota;
+DELETE FROM tb_icms;
+DELETE FROM tb_imposto;
+DELETE FROM tb_movimento;
+DELETE FROM tb_nota;
+DELETE FROM tb_nota_servico;
+DELETE FROM tb_pessoa;
+DELETE FROM tb_retencao;
+DELETE FROM tb_servico;
+DELETE FROM tb_total;
+DELETE FROM tb_total_movimento;
+DELETE FROM tb_total_servico;
+DELETE FROM tb_total_soma;
+DELETE FROM tb_meta_dados;

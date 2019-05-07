@@ -4,7 +4,7 @@ const pg = require('knex')({
   connection: 'postgres://postgres:123456@localhost/danfy',
   searchPath: ['knex', 'danfy'],
 });
-;
+
 
 function getEstado(sigla) {
   return {
@@ -70,7 +70,7 @@ function round(num) {
 //         irpj: round(serv.valores.impostos.retencoes.irpj),
 //         iss: round(serv.valores.impostos.retencoes.iss),
 //         pis: round(serv.valores.impostos.retencoes.pis),
-//         total: round(serv.valores.impostos.retencoes.total),
+//         total: round(serv.valores.impostos.retencoes.total) || 0,
 //       };
 
 //       pg.insert(servico_retencao).returning('id').into('tb_retencao').then(([ servico_retencao_id ]) => {
@@ -115,11 +115,21 @@ function round(num) {
 //           difal_origem: mov.valores.impostos.icms.difal ? round(mov.valores.impostos.icms.difal.origem) : 0,
 //         };
 
+//         const movimento_meta_dados = {
+//           email: mov.metaDados ? mov.metaDados.criadoPor : '',
+//           md_data_hora: mov.metaDados ? new Date(mov.metaDados.dataCriacao) : new Date(),
+//           tipo: mov.metaDados ? mov.metaDados.tipo : 'PRIM',
+//           ativo: mov.metaDados ? mov.metaDados.status === 'ATIVO' : true,
+//         };
+
 //       pg.insert(movimento_imposto_icms).returning('id').into('tb_icms').then(([ imposto_icms_id ]) => {
 //         movimento_imposto.icms_id = imposto_icms_id;
 //         pg.insert(movimento_imposto).returning('id').into('tb_imposto').then(([ movimento_imposto_id ]) => {
 //           movimento.imposto_id = movimento_imposto_id;
-//           pg.insert(movimento).into('tb_movimento').catch(err => console.error(err));
+//           pg.insert(movimento_meta_dados).returning('md_id').into('tb_meta_dados').then(([ movimento_meta_dados_id ]) => {
+//             movimento.meta_dados_id = movimento_meta_dados_id;
+//             pg.insert(movimento).into('tb_movimento').catch(err => console.error(err));
+//           });
 //         });
 //       });
 //       }
@@ -520,3 +530,5 @@ function round(num) {
 //     }).catch(err => console.error(err));
 //   });
 // });
+
+// pg.insert({ cpfcnpj: 'INTERNO', nome: 'INTERNO' }).into('tb_pessoa').catch(e => console.error(e));
