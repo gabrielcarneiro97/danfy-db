@@ -2,15 +2,15 @@
 <project name="danfy" id="Project_1efd899" template="Default" database="PostgreSQL" >
 	<schema name="danfy" schemaname="danfy" >
 		<table name="tb_acumulado" >
-			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
-			<column name="pis" type="numeric" length="9" decimal="2" jt="2" />
-			<column name="cofins" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="id" type="integer" length="10" decimal="0" jt="4" mandatory="y" />
+			<column name="pis" type="numeric" length="32" decimal="2" jt="2" />
+			<column name="cofins" type="numeric" length="32" decimal="2" jt="2" />
 			<index name="pk_tb_acumulado_id" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
 		</table>
 		<table name="tb_aliquota" >
-			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="id" type="integer" length="10" decimal="0" jt="4" mandatory="y" />
 			<column name="cofins" type="numeric" length="9" decimal="4" jt="2" />
 			<column name="pis" type="numeric" length="9" decimal="4" jt="2" />
 			<column name="csll" type="numeric" length="9" decimal="4" jt="2" />
@@ -30,8 +30,29 @@
 				<fk_column name="dono_cpfcnpj" pk="cpfcnpj" />
 			</fk>
 		</table>
+		<table name="tb_difal_aliquota" >
+			<column name="id" type="integer" length="10" decimal="0" jt="4" mandatory="y" />
+			<column name="estado_id" type="integer" jt="4" />
+			<column name="interno" type="numeric" length="32" decimal="4" jt="2" />
+			<column name="externo" type="numeric" length="32" decimal="4" jt="2" />
+			<index name="pk_tb_difal_aliquota_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+			<fk name="estado_id" to_schema="danfy" to_table="tb_estado" >
+				<fk_column name="estado_id" pk="id" />
+			</fk>
+		</table>
+		<table name="tb_dominio" >
+			<column name="id" type="integer" jt="4" mandatory="y" />
+			<column name="codigo" type="text" jt="12" />
+			<column name="numero" type="text" jt="12" />
+			<column name="cnpj" type="text" jt="12" />
+			<index name="pk_tb_dominio_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
 		<table name="tb_endereco" >
-			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="id" type="integer" length="10" decimal="0" jt="4" mandatory="y" />
 			<column name="logradouro" type="text" jt="12" mandatory="y" />
 			<column name="numero" type="text" jt="12" mandatory="y" />
 			<column name="cep" type="varchar" length="8" jt="12" />
@@ -61,25 +82,25 @@
 			</index>
 		</table>
 		<table name="tb_icms" >
-			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
-			<column name="bade_calculo" type="numeric" length="9" decimal="2" jt="2" />
-			<column name="composicao_base" type="numeric" length="9" decimal="2" jt="2" />
-			<column name="difal_destino" type="numeric" length="9" decimal="2" jt="2" />
-			<column name="difal_origem" type="numeric" length="9" decimal="2" jt="2" />
-			<column name="proprio" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="id" type="integer" length="10" decimal="0" jt="4" mandatory="y" />
+			<column name="base_calculo" type="numeric" length="32" decimal="2" jt="2" />
+			<column name="composicao_base" type="numeric" length="32" decimal="2" jt="2" />
+			<column name="difal_destino" type="numeric" length="32" decimal="2" jt="2" />
+			<column name="difal_origem" type="numeric" length="32" decimal="2" jt="2" />
+			<column name="proprio" type="numeric" length="32" decimal="2" jt="2" />
 			<index name="pk_tb_icms_id" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
 		</table>
 		<table name="tb_imposto" >
-			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
-			<column name="cofins" type="numeric" length="9" decimal="2" jt="2" />
-			<column name="csll" type="numeric" length="9" decimal="2" jt="2" />
-			<column name="irpj" type="numeric" length="9" decimal="2" jt="2" />
-			<column name="pis" type="numeric" length="9" decimal="2" jt="2" />
-			<column name="total" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="id" type="integer" length="10" decimal="0" jt="4" mandatory="y" />
+			<column name="cofins" type="numeric" length="32" decimal="2" jt="2" />
+			<column name="csll" type="numeric" length="32" decimal="2" jt="2" />
+			<column name="irpj" type="numeric" length="32" decimal="2" jt="2" />
+			<column name="pis" type="numeric" length="32" decimal="2" jt="2" />
+			<column name="total" type="numeric" length="32" decimal="2" jt="2" />
 			<column name="icms_id" type="integer" jt="4" />
-			<column name="iss" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="iss" type="numeric" length="32" decimal="2" jt="2" />
 			<index name="pk_tb_imposto_id" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
@@ -87,29 +108,47 @@
 				<fk_column name="icms_id" pk="id" />
 			</fk>
 		</table>
+		<table name="tb_meta_dados" >
+			<column name="md_id" type="integer" jt="4" mandatory="y" />
+			<column name="email" type="text" jt="12" />
+			<column name="md_data_hora" type="date" jt="91" />
+			<column name="tipo" type="text" jt="12" />
+			<column name="ativo" type="bool" jt="-7" />
+			<column name="ref_movimento_id" type="integer" jt="4" />
+			<column name="ref_servico_id" type="integer" jt="4" />
+			<index name="pk_tb_meta_dados_md_id" unique="PRIMARY_KEY" >
+				<column name="md_id" />
+			</index>
+			<fk name="ref_movimento_id" to_schema="danfy" to_table="tb_movimento" >
+				<fk_column name="ref_movimento_id" pk="id" />
+			</fk>
+			<fk name="ref_servico_id" to_schema="danfy" to_table="tb_servico" >
+				<fk_column name="ref_servico_id" pk="id" />
+			</fk>
+		</table>
 		<table name="tb_movimento" >
-			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="id" type="integer" length="10" decimal="0" jt="4" mandatory="y" />
 			<column name="dono_cpfcnpj" type="varchar" length="14" jt="12" mandatory="y" />
 			<column name="nota_final_chave" type="text" jt="12" mandatory="y" />
 			<column name="nota_inicial_chave" type="text" jt="12" />
-			<column name="valor_saida" type="numeric" length="9" decimal="2" jt="2" />
-			<column name="lucro" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="valor_saida" type="numeric" length="32" decimal="2" jt="2" />
+			<column name="lucro" type="numeric" length="32" decimal="2" jt="2" />
 			<column name="data_hora" type="date" jt="91" mandatory="y" />
 			<column name="conferido" type="bool" jt="-7" />
 			<column name="imposto_id" type="integer" jt="4" />
 			<index name="pk_tb_movimento_id" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
-			<fk name="dono_cpfcnpj" to_schema="danfy" to_table="tb_pessoa" >
+			<fk name="dono_cpfcnpj" to_schema="danfy" to_table="tb_pessoa" delete_action="cascade" update_action="cascade" >
 				<fk_column name="dono_cpfcnpj" pk="cpfcnpj" />
 			</fk>
 			<fk name="imposto_id" to_schema="danfy" to_table="tb_imposto" delete_action="cascade" update_action="cascade" >
 				<fk_column name="imposto_id" pk="id" />
 			</fk>
-			<fk name="nota_final_chave" to_schema="danfy" to_table="tb_nota" >
+			<fk name="nota_final_chave" to_schema="danfy" to_table="tb_nota" delete_action="cascade" update_action="cascade" >
 				<fk_column name="nota_final_chave" pk="chave" />
 			</fk>
-			<fk name="nota_inicial_chave" to_schema="danfy" to_table="tb_nota" >
+			<fk name="nota_inicial_chave" to_schema="danfy" to_table="tb_nota" delete_action="cascade" update_action="cascade" >
 				<fk_column name="nota_inicial_chave" pk="chave" />
 			</fk>
 		</table>
@@ -192,7 +231,7 @@
 			</fk>
 		</table>
 		<table name="tb_produto" >
-			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="id" type="integer" length="10" decimal="0" jt="4" mandatory="y" />
 			<column name="nome" type="text" jt="12" mandatory="y" />
 			<column name="descricao" type="text" jt="12" mandatory="y" />
 			<column name="quantidade" type="integer" jt="4" />
@@ -206,25 +245,27 @@
 			</fk>
 		</table>
 		<table name="tb_retencao" >
-			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
-			<column name="iss" type="numeric" length="9" decimal="2" jt="2" />
-			<column name="irpj" type="numeric" length="9" decimal="2" jt="2" />
-			<column name="pis" type="numeric" length="9" decimal="2" jt="2" />
-			<column name="cofins" type="numeric" length="9" decimal="2" jt="2" />
-			<column name="csll" type="numeric" length="9" decimal="2" jt="2" />
-			<column name="inss" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="id" type="integer" length="10" decimal="0" jt="4" mandatory="y" />
+			<column name="iss" type="numeric" length="32" decimal="2" jt="2" />
+			<column name="irpj" type="numeric" length="32" decimal="2" jt="2" />
+			<column name="pis" type="numeric" length="32" decimal="2" jt="2" />
+			<column name="cofins" type="numeric" length="32" decimal="2" jt="2" />
+			<column name="csll" type="numeric" length="32" decimal="2" jt="2" />
+			<column name="inss" type="numeric" length="32" decimal="2" jt="2" />
+			<column name="total" type="numeric" length="32" decimal="2" jt="2" />
 			<index name="pk_retencoes_id" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
 		</table>
 		<table name="tb_servico" >
-			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="id" type="integer" length="10" decimal="0" jt="4" mandatory="y" />
 			<column name="dono_cpfcnpj" type="varchar" length="14" jt="12" mandatory="y" />
 			<column name="nota_chave" type="text" jt="12" />
 			<column name="retencao_id" type="integer" jt="4" />
 			<column name="imposto_id" type="integer" jt="4" />
 			<column name="data_hora" type="date" jt="91" />
-			<column name="valor" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="valor" type="numeric" length="32" decimal="2" jt="2" />
+			<column name="conferido" type="bool" jt="-7" />
 			<index name="pk_tb_servico_id" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
@@ -242,7 +283,7 @@
 			</fk>
 		</table>
 		<table name="tb_total" >
-			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="id" type="integer" length="10" decimal="0" jt="4" mandatory="y" />
 			<column name="dono_cpfcnpj" type="varchar" length="14" jt="12" />
 			<column name="data_hora" type="date" jt="91" />
 			<column name="total_movimento_id" type="integer" jt="4" />
@@ -266,10 +307,10 @@
 			</fk>
 		</table>
 		<table name="tb_total_movimento" >
-			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
+			<column name="id" type="integer" length="10" decimal="0" jt="4" mandatory="y" />
 			<column name="imposto_id" type="integer" jt="4" />
-			<column name="valor_saida" type="numeric" length="9" decimal="2" jt="2" />
-			<column name="lucro" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="valor_saida" type="numeric" length="32" decimal="2" jt="2" />
+			<column name="lucro" type="numeric" length="32" decimal="2" jt="2" />
 			<index name="pk_tb_total_movimento_id" unique="PRIMARY_KEY" >
 				<column name="id" />
 			</index>
@@ -278,8 +319,8 @@
 			</fk>
 		</table>
 		<table name="tb_total_servico" >
-			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
-			<column name="total" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="id" type="integer" length="10" decimal="0" jt="4" mandatory="y" />
+			<column name="total" type="numeric" length="32" decimal="2" jt="2" />
 			<column name="imposto_id" type="integer" jt="4" />
 			<column name="retencao_id" type="integer" jt="4" />
 			<index name="pk_tb_total_servico_id" unique="PRIMARY_KEY" >
@@ -293,9 +334,9 @@
 			</fk>
 		</table>
 		<table name="tb_total_soma" >
-			<column name="id" type="integer" jt="4" mandatory="y" autoincrement="y" />
-			<column name="valor_movimento" type="numeric" length="9" decimal="2" jt="2" />
-			<column name="valor_servico" type="numeric" length="9" decimal="2" jt="2" />
+			<column name="id" type="integer" length="10" decimal="0" jt="4" mandatory="y" />
+			<column name="valor_movimento" type="numeric" length="32" decimal="2" jt="2" />
+			<column name="valor_servico" type="numeric" length="32" decimal="2" jt="2" />
 			<column name="imposto_id" type="integer" jt="4" />
 			<column name="retencao_id" type="integer" jt="4" />
 			<column name="acumulado_id" type="integer" jt="4" />
@@ -312,19 +353,26 @@
 				<fk_column name="acumulado_id" pk="id" />
 			</fk>
 		</table>
-		<sequence name="tb_acumulado_id_seq" start="1" />
-		<sequence name="tb_aliquota_id_seq" start="1" />
-		<sequence name="tb_endereco_id_seq" start="1" />
-		<sequence name="tb_icms_id_seq" start="1" />
-		<sequence name="tb_imposto_id_seq" start="1" />
-		<sequence name="tb_movimento_id_seq" start="1" />
-		<sequence name="tb_produto_id_seq" start="1" />
-		<sequence name="tb_retencao_id_seq" start="1" />
-		<sequence name="tb_servico_id_seq" start="1" />
-		<sequence name="tb_total_id_seq" start="1" />
-		<sequence name="tb_total_movimento_id_seq" start="1" />
-		<sequence name="tb_total_servico_id_seq" start="1" />
-		<sequence name="tb_total_soma_id_seq" start="1" />
+		<table name="tb_usuario" >
+			<column name="id" type="integer" jt="4" mandatory="y" />
+			<column name="dominio_codigo" type="text" jt="12" />
+			<index name="pk_tb_usuario_id" unique="PRIMARY_KEY" >
+				<column name="id" />
+			</index>
+		</table>
+		<sequence name="tb_acumulado_id_seq" />
+		<sequence name="tb_aliquota_id_seq" />
+		<sequence name="tb_endereco_id_seq" />
+		<sequence name="tb_icms_id_seq" />
+		<sequence name="tb_imposto_id_seq" />
+		<sequence name="tb_movimento_id_seq" />
+		<sequence name="tb_produto_id_seq" />
+		<sequence name="tb_retencao_id_seq" />
+		<sequence name="tb_servico_id_seq" />
+		<sequence name="tb_total_id_seq" />
+		<sequence name="tb_total_movimento_id_seq" />
+		<sequence name="tb_total_servico_id_seq" />
+		<sequence name="tb_total_soma_id_seq" />
 	</schema>
 	<schema name="information_schema" catalogname="danfy" schemaname="information_schema" >
 		<udt name="cardinal_number" udt_java_type="12" udt_precision="NONE" >
@@ -984,29 +1032,34 @@ AS $function$areasel$function$
 		</procedure>
 	</schema>
 	<schema name="public" catalogname="danfy" schemaname="public" />
-	<connector name="PostgreSQL" database="PostgreSQL" driver_class="org.postgresql.Driver" driver_jar="postgresql-42.2.2.jar" driver_desc="Standard" host="localhost" port="5432" instance="danfy" user="postgres" passwd="MTIzNDU2" />
-	<connector name="PostgreSQL" database="PostgreSQL" driver_class="org.postgresql.Driver" driver_jar="postgresql-42.2.2.jar" driver_desc="Standard" host="localhost" port="5432" instance="danfy" user="postgres" passwd="MTIzNDU2" />
-	<connector name="PostgreSQL" database="PostgreSQL" driver_class="org.postgresql.Driver" driver_jar="postgresql-42.2.2.jar" driver_desc="Standard" host="localhost" port="5432" instance="danfy" user="postgres" passwd="MTIzNDU2" />
+	<connector name="PostgreSQL" database="PostgreSQL" driver_class="org.postgresql.Driver" driver_jar="postgresql-42.2.5.jar" driver_desc="Standard" host="localhost" port="5432" instance="danfy" user="postgres" passwd="MTIzNDU2" />
+	<connector name="PostgreSQL" database="PostgreSQL" host="localhost" port="5432" instance="danfy" user="postgres" passwd="MTIzNDU2" />
+	<connector name="PostgreSQL" database="PostgreSQL" host="localhost" port="5432" instance="danfy" user="postgres" passwd="MTIzNDU2" />
+	<connector name="PostgreSQL" database="PostgreSQL" host="localhost" port="5432" instance="danfy" user="postgres" passwd="MTIzNDU2" />
 	<connector name="PostgreSQL" database="PostgreSQL" host="localhost" port="5432" instance="danfy" user="postgres" passwd="MTIzNDU2" />
 	<layout name="Default Layout" id="Layout_423e0c" confirmed="y" show_relation="columns" >
-		<entity schema="danfy" name="tb_retencao" color="C1D8EE" x="560" y="896" />
-		<entity schema="danfy" name="tb_imposto" color="C1D8EE" x="512" y="672" />
-		<entity schema="danfy" name="tb_icms" color="C1D8EE" x="304" y="784" />
-		<entity schema="danfy" name="tb_total_movimento" color="C1D8EE" x="960" y="64" />
-		<entity schema="danfy" name="tb_total_servico" color="C1D8EE" x="976" y="192" />
-		<entity schema="danfy" name="tb_acumulado" color="C1D8EE" x="1328" y="160" />
-		<entity schema="danfy" name="tb_total_soma" color="C1D8EE" x="1152" y="128" />
-		<entity schema="danfy" name="tb_movimento" color="C1D8EE" x="480" y="464" />
-		<entity schema="danfy" name="tb_servico" color="C1D8EE" x="672" y="656" />
-		<entity schema="danfy" name="tb_total" color="C1D8EE" x="720" y="64" />
-		<entity schema="danfy" name="tb_aliquota" color="C1D8EE" x="512" y="48" />
-		<entity schema="danfy" name="tb_estado" color="C1D8EE" x="1216" y="416" />
-		<entity schema="danfy" name="tb_pais" color="3986C1" x="1072" y="512" />
-		<entity schema="danfy" name="tb_municipio" color="C1D8EE" x="1008" y="656" />
-		<entity schema="danfy" name="tb_endereco" color="C1D8EE" x="912" y="400" />
-		<entity schema="danfy" name="tb_pessoa" color="C1D8EE" x="672" y="464" />
-		<entity schema="danfy" name="tb_nota" color="3986C1" x="192" y="416" />
-		<entity schema="danfy" name="tb_produto" color="C1D8EE" x="48" y="352" />
-		<entity schema="danfy" name="tb_nota_servico" color="C1D8EE" x="736" y="880" />
+		<entity schema="danfy" name="tb_total" color="C1D8EE" x="720" y="128" />
+		<entity schema="danfy" name="tb_estado" color="C1D8EE" x="1216" y="480" />
+		<entity schema="danfy" name="tb_pais" color="3986C1" x="1072" y="576" />
+		<entity schema="danfy" name="tb_municipio" color="C1D8EE" x="1008" y="720" />
+		<entity schema="danfy" name="tb_endereco" color="C1D8EE" x="912" y="464" />
+		<entity schema="danfy" name="tb_pessoa" color="C1D8EE" x="672" y="528" />
+		<entity schema="danfy" name="tb_nota" color="3986C1" x="192" y="480" />
+		<entity schema="danfy" name="tb_produto" color="C1D8EE" x="48" y="416" />
+		<entity schema="danfy" name="tb_retencao" color="C1D8EE" x="560" y="960" />
+		<entity schema="danfy" name="tb_icms" color="C1D8EE" x="304" y="848" />
+		<entity schema="danfy" name="tb_imposto" color="C1D8EE" x="512" y="736" />
+		<entity schema="danfy" name="tb_nota_servico" color="C1D8EE" x="736" y="944" />
+		<entity schema="danfy" name="tb_acumulado" color="C1D8EE" x="1328" y="224" />
+		<entity schema="danfy" name="tb_total_soma" color="C1D8EE" x="1152" y="192" />
+		<entity schema="danfy" name="tb_total_servico" color="C1D8EE" x="976" y="256" />
+		<entity schema="danfy" name="tb_total_movimento" color="C1D8EE" x="960" y="128" />
+		<entity schema="danfy" name="tb_movimento" color="C1D8EE" x="480" y="528" />
+		<entity schema="danfy" name="tb_servico" color="C1D8EE" x="672" y="720" />
+		<entity schema="danfy" name="tb_dominio" color="C1D8EE" x="144" y="240" />
+		<entity schema="danfy" name="tb_meta_dados" color="C1D8EE" x="80" y="160" />
+		<entity schema="danfy" name="tb_usuario" color="C1D8EE" x="64" y="48" />
+		<entity schema="danfy" name="tb_aliquota" color="C1D8EE" x="512" y="112" />
+		<entity schema="danfy" name="tb_difal_aliquota" color="C1D8EE" x="272" y="96" />
 	</layout>
 </project>

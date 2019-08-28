@@ -432,76 +432,6 @@ function round(num) {
 //   });
 // });
 
-// pegarNotaServicoChave('02540711000184201800000000018').then((mongoNota) => {
-
-//   const { valor } = mongoNota;
-//   const { retencoes } = valor;
-
-//   const notaServico = {
-//     chave: mongoNota._id,
-//     destinatario_cpfcnpj: mongoNota.destinatario,
-//     emitente_cpfcnpj: mongoNota.emitente,
-//     data_hora: mongoNota.geral.dataHora,
-//     numero: mongoNota.geral.numero,
-//     status: mongoNota.geral.status,
-//     valor: round(valor.servico),
-//     iss: round(valor.iss.valor),
-//   };
-
-//   const retencao = {
-//     iss: round(retencoes.iss),
-//     pis: round(retencoes.pis),
-//     cofins: round(retencoes.cofins),
-//     irpj: round(retencoes.irpj),
-//     csll: round(retencoes.csll),
-//     inss: round(retencoes.inss),
-//   };
-
-//   pg.insert(retencao).returning('id').into('tb_retencao').then(([ retencao_id ]) => {
-//     notaServico.retencao_id = retencao_id;
-
-//     pg.insert(notaServico).into('tb_nota_servico').catch(err => console.log(err));
-//   });
-// });
-
-// pegarNotaChave('31190305512402000270550010000539021000598138').then((mongoNota) => {
-//   const { geral, informacoesEstaduais } = mongoNota;
-//   const nota = {
-//     chave: mongoNota.chave,
-//     destinatario_cpfcnpj: mongoNota.destinatario,
-//     emitente_cpfcnpj: mongoNota.emitente,
-//     estado_destino_id: getEstado(informacoesEstaduais.estadoDestino),
-//     estado_gerador_id: getEstado(informacoesEstaduais.estadoGerador),
-//     destinatario_contribuinte: informacoesEstaduais.destinatarioContribuinte,
-//     valor: round(mongoNota.valor.total),
-//     data_hora: geral.dataHora,
-//     numero: geral.numero,
-//     status: geral.status,
-//     cfop: geral.cfop,
-//     tipo: geral.tipo,
-//     texto_complementar: mongoNota.complementar.textoComplementar,
-//   };
-
-//   const produtos = [];
-
-//   Object.keys(mongoNota.produtos).forEach((prodNome) => {
-//     const prod = mongoNota.produtos[prodNome];
-//     produtos.push({
-//       nota_chave: mongoNota.chave,
-//       nome: prodNome,
-//       descricao: prod.descricao,
-//       valor: round(prod.valor.total),
-//       quantidade: parseInt(prod.quantidade.numero, 10),
-//     });
-//   });
-
-//   pg.insert(nota).into('tb_nota').then(() => {
-//     produtos.forEach((produto) => {
-//       pg.insert(produto).into('tb_produto').then(() => console.log('foi'));
-//     });
-//   });
-// });
-
 // pegarTodasNotas().then((notas) => {
 //   console.log('pegou');
 //   notas.forEach((mongoNota) => {
@@ -549,7 +479,7 @@ function round(num) {
 //       if (dest_sel.length === 0) {
 //         p.push(pg.insert({ cpfcnpj: nota.destinatario_cpfcnpj, nome: 'desconhecido' }).into('tb_pessoa'));
 //       }
-      
+
 //       Promise.all(p).then(() => {
 //         pg.insert(nota).into('tb_nota').then(() => {
 //           if (produtos.length > 0) {
@@ -563,29 +493,6 @@ function round(num) {
 //   });
 // });
 
-// pegarPessoaFlat('06914971000123').then((mongoPessoa) => {
-//   const pessoa = {
-//     cpfcnpj: mongoPessoa._id,
-//     nome: mongoPessoa.nome,
-//   }
-
-//   const endereco = {
-//     ...mongoPessoa.endereco._doc,
-//     municipio_id: parseInt(mongoPessoa.endereco.municipio.codigo, 10),
-//     estado_id: getEstado(mongoPessoa.endereco.estado),
-//     pais_id: 1,
-//   }
-
-//   delete endereco.municipio;
-//   delete endereco.estado;
-//   delete endereco.pais;
-//   delete endereco._id;
-
-//   pg.insert(endereco).returning('id').into('tb_endereco').then(([endereco_id]) => {
-//     pessoa.endereco_id = endereco_id;
-//     pg.insert(pessoa).into('tb_pessoa').then(() => console.log('end'));
-//   });
-// });
 
 // pegarTodasPessoasFlat().then((pessoas) => {
 //   pessoas.forEach((mongoPessoa) => {
