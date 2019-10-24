@@ -1,4 +1,4 @@
-const { pegarPessoaFlat, pegarTodasPessoasFlat, pegarNotaChave, pegarTodasNotas, pegarTodasNotasServico, pegarNotaServicoChave, pegarTodasAliquotas, pegarTodosTotais, pegarTodosMovimentos, pegarTodosServicos } = require('./services');
+const { pegarPessoaFlat, pegarTodasPessoasFlat, pegarNotaChave, pegarTodasNotas, pegarTodasNotasServico, pegarNotaServicoChave, pegarTodasAliquotas, pegarTodosTotais, pegarTodosMovimentos, pegarTodosServicos, pegarDominioId } = require('./services');
 const pg = require('knex')({
   client: 'pg',
   connection: 'postgres://postgres:123456@localhost/danfy',
@@ -125,6 +125,7 @@ function round(num) {
 }
 
 // pegarTodosServicos().then((dados) => {
+//   console.log('começou');
 //   dados.forEach((pessoa) => {
 //     const { Servicos } = pessoa;
 
@@ -167,54 +168,74 @@ function round(num) {
 //   });
 // });
 
+// async function migrarMovimentos() {
+//   console.log('começou');
+//   const dados = await pegarTodosMovimentos();
+
+//   console.log('pegou dados');
+
+//   for (let pessoa of dados) {
+//     const { Movimentos } = pessoa;
+
+//     if (Movimentos) {
+//       for (mov of Movimentos) {
+//         if (mov.conferido) {
+//           const movimento = {
+//             dono_cpfcnpj: pessoa._id,
+//             nota_inicial_chave: mov.notaInicial,
+//             nota_final_chave: mov.notaFinal,
+//             conferido: mov.conferido,
+//             data_hora: mov.data,
+//             lucro: mov.valores.lucro,
+//             valor_saida: mov.valores.valorSaida,
+//           };
+
+//           const movimento_imposto = {
+//             cofins: round(mov.valores.impostos.cofins),
+//             csll: round(mov.valores.impostos.csll),
+//             irpj: round(mov.valores.impostos.irpj),
+//             pis: round(mov.valores.impostos.pis),
+//             total: round(mov.valores.impostos.total),
+//           }
+
+//           const movimento_imposto_icms = {
+//             base_calculo: round(mov.valores.impostos.icms.baseDeCalculo),
+//             proprio: round(mov.valores.impostos.icms.proprio),
+//             difal_destino: mov.valores.impostos.icms.difal ? round(mov.valores.impostos.icms.difal.destino) : 0,
+//             difal_origem: mov.valores.impostos.icms.difal ? round(mov.valores.impostos.icms.difal.origem) : 0,
+//           };
+
+//           const movimento_meta_dados = {
+//             email: mov.metaDados ? mov.metaDados.criadoPor : '',
+//             md_data_hora: mov.metaDados ? new Date(mov.metaDados.dataCriacao) : new Date(),
+//             tipo: mov.metaDados ? mov.metaDados.tipo : 'PRIM',
+//             ativo: mov.metaDados ? mov.metaDados.status === 'ATIVO' : true,
+//           };
+
+//           const [imposto_icms_id] = await pg.insert(movimento_imposto_icms).returning('id').into('tb_icms');
+//           movimento_imposto.icms_id = imposto_icms_id;
+
+//           const [movimento_imposto_id] = await pg.insert(movimento_imposto).returning('id').into('tb_imposto');
+//           movimento.imposto_id = movimento_imposto_id;
+
+//           const [movimento_meta_dados_id] = await pg.insert(movimento_meta_dados).returning('md_id').into('tb_meta_dados');
+//           movimento.meta_dados_id = movimento_meta_dados_id;
+
+//           await pg.insert(movimento).into('tb_movimento');
+//         }
+//       }
+
+//       console.log('Acabou pessoa:', pessoa._id);
+//     }
+//   }
+// }
+// migrarMovimentos();
+
 // pegarTodosMovimentos().then((dados) => {
 //   dados.forEach((pessoa) => {
 //     const { Movimentos } = pessoa;
 //     Movimentos.forEach((mov) => {
-//       if (mov.conferido) {
-//         const movimento = {
-//           dono_cpfcnpj: pessoa._id,
-//           nota_inicial_chave: mov.notaInicial,
-//           nota_final_chave: mov.notaFinal,
-//           conferido: mov.conferido,
-//           data_hora: mov.data,
-//           lucro: mov.valores.lucro,
-//           valor_saida: mov.valores.valorSaida,
-//         };
 
-//         const movimento_imposto = {
-//           cofins: round(mov.valores.impostos.cofins),
-//           csll: round(mov.valores.impostos.csll),
-//           irpj: round(mov.valores.impostos.irpj),
-//           pis: round(mov.valores.impostos.pis),
-//           total: round(mov.valores.impostos.total),
-//         }
-
-//         const movimento_imposto_icms = {
-//           base_calculo: round(mov.valores.impostos.icms.baseDeCalculo),
-//           proprio: round(mov.valores.impostos.icms.proprio),
-//           difal_destino: mov.valores.impostos.icms.difal ? round(mov.valores.impostos.icms.difal.destino) : 0,
-//           difal_origem: mov.valores.impostos.icms.difal ? round(mov.valores.impostos.icms.difal.origem) : 0,
-//         };
-
-//         const movimento_meta_dados = {
-//           email: mov.metaDados ? mov.metaDados.criadoPor : '',
-//           md_data_hora: mov.metaDados ? new Date(mov.metaDados.dataCriacao) : new Date(),
-//           tipo: mov.metaDados ? mov.metaDados.tipo : 'PRIM',
-//           ativo: mov.metaDados ? mov.metaDados.status === 'ATIVO' : true,
-//         };
-
-//       pg.insert(movimento_imposto_icms).returning('id').into('tb_icms').then(([ imposto_icms_id ]) => {
-//         movimento_imposto.icms_id = imposto_icms_id;
-//         pg.insert(movimento_imposto).returning('id').into('tb_imposto').then(([ movimento_imposto_id ]) => {
-//           movimento.imposto_id = movimento_imposto_id;
-//           pg.insert(movimento_meta_dados).returning('md_id').into('tb_meta_dados').then(([ movimento_meta_dados_id ]) => {
-//             movimento.meta_dados_id = movimento_meta_dados_id;
-//             pg.insert(movimento).into('tb_movimento').catch(err => console.error(err));
-//           });
-//         });
-//       });
-//       }
 //     });
 //   });
 // });
@@ -398,98 +419,139 @@ function round(num) {
 //   });
 // });
 
-// pegarTodasNotasServico().then((notas) => {
-//   notas.forEach((mongoNota) => {
+// async function migrarNotasServico() {
+//   try {
+//     const notas = await pegarTodasNotasServico();
 
-//     const { valor } = mongoNota;
-//     const { retencoes } = valor;
+//     for (let mongoNota of notas) {
+//       const { valor } = mongoNota;
+//       const { retencoes } = valor;
 
-//     const notaServico = {
-//       chave: mongoNota._id,
-//       destinatario_cpfcnpj: mongoNota.destinatario,
-//       emitente_cpfcnpj: mongoNota.emitente,
-//       data_hora: mongoNota.geral.dataHora,
-//       numero: mongoNota.geral.numero,
-//       status: mongoNota.geral.status,
-//       valor: round(valor.servico),
-//       iss: valor.iss ? round(valor.iss.valor) : 0,
-//     };
+//       const notaServico = {
+//         chave: mongoNota._id,
+//         destinatario_cpfcnpj: mongoNota.destinatario,
+//         emitente_cpfcnpj: mongoNota.emitente,
+//         data_hora: mongoNota.geral.dataHora,
+//         numero: mongoNota.geral.numero,
+//         status: mongoNota.geral.status,
+//         valor: round(valor.servico),
+//         iss: valor.iss ? round(valor.iss.valor) : 0,
+//       };
 
-//     const retencao = {
-//       iss: round(retencoes.iss),
-//       pis: round(retencoes.pis),
-//       cofins: round(retencoes.cofins),
-//       irpj: round(retencoes.irpj),
-//       csll: round(retencoes.csll),
-//       inss: round(retencoes.inss),
-//     };
+//       const retencao = {
+//         iss: round(retencoes.iss),
+//         pis: round(retencoes.pis),
+//         cofins: round(retencoes.cofins),
+//         irpj: round(retencoes.irpj),
+//         csll: round(retencoes.csll),
+//         inss: round(retencoes.inss),
+//       };
 
-//     pg.insert(retencao).returning('id').into('tb_retencao').then(([retencao_id]) => {
+//       const [retencao_id] = await pg.insert(retencao).returning('id').into('tb_retencao');
 //       notaServico.retencao_id = retencao_id;
 
-//       pg.insert(notaServico).into('tb_nota_servico').catch(err => console.log(err));
-//     });
-//   });
-// });
+//       await pg.insert(notaServico).into('tb_nota_servico');
 
-// pegarTodasNotas().then((notas) => {
-//   console.log('pegou');
-//   notas.forEach((mongoNota) => {
-//     const { geral, informacoesEstaduais } = mongoNota;
-//     const nota = {
-//       chave: mongoNota._id,
-//       destinatario_cpfcnpj: mongoNota.destinatario || 0,
-//       emitente_cpfcnpj: mongoNota.emitente || 0,
-//       estado_destino_id: getEstado(informacoesEstaduais.estadoDestino),
-//       estado_gerador_id: getEstado(informacoesEstaduais.estadoGerador),
-//       destinatario_contribuinte: informacoesEstaduais.destinatarioContribuinte,
-//       valor: round(mongoNota.valor.total),
-//       data_hora: geral.dataHora,
-//       numero: geral.numero,
-//       status: geral.status,
-//       cfop: geral.cfop,
-//       tipo: geral.tipo,
-//       texto_complementar: mongoNota.complementar.textoComplementar,
+//       console.log('Fim:', notaServico.chave);
+//     }
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
+// migrarNotasServico();
+
+// async function migrarNotas() {
+//   try {
+//     console.log('iniciou');
+//     const notas = await pegarTodasNotas();
+//     console.log('notas carregadas');
+
+//     for (let mongoNota of notas) {
+//       const { geral, informacoesEstaduais } = mongoNota;
+//       const nota = {
+//         chave: mongoNota._id,
+//         destinatario_cpfcnpj: mongoNota.destinatario || 0,
+//         emitente_cpfcnpj: mongoNota.emitente || 0,
+//         estado_destino_id: getEstado(informacoesEstaduais.estadoDestino),
+//         estado_gerador_id: getEstado(informacoesEstaduais.estadoGerador),
+//         destinatario_contribuinte: informacoesEstaduais.destinatarioContribuinte,
+//         valor: round(mongoNota.valor.total),
+//         data_hora: geral.dataHora,
+//         numero: geral.numero,
+//         status: geral.status,
+//         cfop: geral.cfop,
+//         tipo: geral.tipo,
+//         texto_complementar: mongoNota.complementar.textoComplementar,
+//       };
+
+//       console.log('Iniciou nota:', nota.chave);
+
+//       const prodsKeys = mongoNota.produtos ? Object.keys(mongoNota.produtos) : null;
+
+//       const produtos = prodsKeys ? prodsKeys.map(
+//         (prodNome) => {
+//           const prod = mongoNota.produtos[prodNome];
+//           if (prod) {
+//             return {
+//               nota_chave: mongoNota._id,
+//               nome: prodNome,
+//               descricao: prod.descricao,
+//               valor: round(prod.valor.total),
+//               quantidade: parseInt(prod.quantidade.numero, 10),
+//             };
+//           }
+//         },
+//       ) : [];
+
+//       console.log(produtos.length, 'na nota:', nota.chave);
+
+//       const [emitSel, destSel] = await Promise.all([
+//         pg.select().from('tb_pessoa').where('cpfcnpj', '=', nota.emitente_cpfcnpj),
+//         pg.select().from('tb_pessoa').where('cpfcnpj', '=', nota.destinatario_cpfcnpj),
+//       ]);
+
+//       console.log('Conferiu emitente destinatario:', nota.chave);
+
+//       if (emitSel.length === 0)
+//         await pg.insert({ cpfcnpj: nota.emitente_cpfcnpj, nome: 'desconhecido' }).into('tb_pessoa');
+
+//       if (destSel.length === 0)
+//         await pg.insert({ cpfcnpj: nota.destinatario_cpfcnpj, nome: 'desconhecido' }).into('tb_pessoa');
+
+//       console.log('Inserindo nota:', nota.chave);
+
+//       await pg.insert(nota).into('tb_nota');
+
+//       console.log('Inserindo produtos:', nota.chave);
+//       if (produtos.length > 0) {
+//         await Promise.all(produtos.map(async (produto) => pg.insert(produto).into('tb_produto')));
+//       }
+
+//       console.log('Fim:', nota.chave);
+//     }
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
+// migrarNotas();
+
+
+// pegarDominioId('e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855').then((dados) => {
+//   const codigo = dados._id;
+//   const { empresas } = dados;
+
+//   Object.keys(empresas).forEach((numero) => {
+//     const cnpj = empresas[numero];
+
+//     console.log(numero, cnpj);
+
+//     const dominio = {
+//       codigo,
+//       cnpj,
+//       numero,
 //     };
 
-//     const produtos = [];
-
-//     if (mongoNota.produtos.length > 0) {
-//       Object.keys(mongoNota.produtos).forEach((prodNome) => {
-//         const prod = mongoNota.produtos[prodNome];
-//         if (prod) {
-//           produtos.push({
-//             nota_chave: mongoNota._id,
-//             nome: prodNome,
-//             descricao: prod.descricao,
-//             valor: round(prod.valor.total),
-//             quantidade: parseInt(prod.quantidade.numero, 10),
-//           });
-//         }
-//       });
-//     }
-//     Promise.all([
-//       pg.select().from('tb_pessoa').where('cpfcnpj', '=', nota.emitente_cpfcnpj),
-//       pg.select().from('tb_pessoa').where('cpfcnpj', '=', nota.destinatario_cpfcnpj),
-//     ]).then(([ emit_sel, dest_sel ]) => {
-//       const p = [];
-//       if (emit_sel.length === 0) {
-//         p.push(pg.insert({ cpfcnpj: nota.emitente_cpfcnpj, nome: 'desconhecido' }).into('tb_pessoa'));
-//       }
-//       if (dest_sel.length === 0) {
-//         p.push(pg.insert({ cpfcnpj: nota.destinatario_cpfcnpj, nome: 'desconhecido' }).into('tb_pessoa'));
-//       }
-
-//       Promise.all(p).then(() => {
-//         pg.insert(nota).into('tb_nota').then(() => {
-//           if (produtos.length > 0) {
-//             produtos.forEach((produto) => {
-//               pg.insert(produto).into('tb_produto').catch(err => console.error(err));
-//             });
-//           }
-//         }).catch(err => console.error(err));
-//       });
-//     });
+//     pg.insert(dominio).into('tb_dominio').returning('id').then((d) => console.log(d));
 //   });
 // });
 
@@ -515,7 +577,7 @@ function round(num) {
 
 //     pg.insert(endereco).returning('id').into('tb_endereco').then(([endereco_id]) => {
 //       pessoa.endereco_id = endereco_id;
-//       pg.insert(pessoa).into('tb_pessoa').catch(err => console.error(err));
+//       pg.insert(pessoa).into('tb_pessoa').catch(err => console.error(err)).then(() => console.log(pessoa.id));
 //     }).catch(err => console.error(err));
 //   });
 // });

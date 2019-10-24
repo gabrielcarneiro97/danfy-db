@@ -17,8 +17,13 @@ function adicionarEmpresa(_id, num, cnpj) {
   });
 }
 
+function pegarTodosDominios() {
+  return Dominio.find({});
+}
+
 module.exports = {
   criarDominio,
   pegarDominioId,
   adicionarEmpresa,
+  pegarTodosDominios,
 };
